@@ -10,14 +10,15 @@ public class App {
         int colCount = 16;
         int tileSize = 48;
         int boardWidth = colCount * tileSize;
-        int boardHeigt = rowCount * tileSize;
+        int boardHeight  = rowCount * tileSize;
 
-        frame.setSize(boardWidth, boardHeigt);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        frame.setSize(boardWidth, boardHeight );
 
         CaffeGame game = new CaffeGame();
         frame.add(game);
         frame.pack();
+
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
     }
 }
