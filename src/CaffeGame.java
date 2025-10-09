@@ -1,8 +1,12 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
-public class CaffeGame extends JPanel implements Runnable, MouseListener {
+public class CaffeGame extends JPanel {
 
     // SCREEN SETTINGS
 
@@ -10,67 +14,61 @@ public class CaffeGame extends JPanel implements Runnable, MouseListener {
     int colCount = 16;
     int tileSize = 48;
     int boardWidth = colCount * tileSize;
-    int boardHeight  = rowCount * tileSize;
-    Thread gameThread;
+    int boardHeight = rowCount * tileSize;
+
+    MouseHandler mouseH = new MouseHandler();
+
+    // Set waitress default position
+    int waitressX = 100;
+    int waitressY = 100;
+    int waitresSpeed = 6;
+
+    Timer timer;
 
     public CaffeGame() {
         setPreferredSize((new Dimension(boardWidth, boardHeight)));
         setBackground(Color.pink);
         this.setDoubleBuffered(true);
-        startGameThread();
+        this.addMouseListener(mouseH);
+
+        timer = new Timer(16, e -> {
+            update();
+            repaint();
+        });
+        timer.start();
+
     }
 
-    public void startGameThread() {
 
-        gameThread = new Thread(this);
-        gameThread.start();
-    }
+    public void update() {
 
-    @Override
-    public void run() {
-        while (gameThread != null) {
+        if (mouseH.clickedLocation == null)
+            return; // no click yet
 
+        double targetX = mouseH.clickedLocation.getX();
+        double targetY = mouseH.clickedLocation.getY();
+
+        double directionX = targetX - waitressX;
+        double directionY = targetY - waitressY;
+        double distance = Math.sqrt(Math.pow(directionX, 2) + Math.pow(directionY, 2));
+
+        if (distance > 5) { // only move if not already close enough
+            waitressX += (directionX / distance) * waitresSpeed;
+            waitressY += (directionY / distance) * waitresSpeed;
         }
+
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.setColor(Color.RED);
-        g.fillOval(10, 10, 50, 50);
-        g.dispose();        
-
+        Graphics2D g2 = (Graphics2D) g;
+        
+        g2.setColor(Color.RED);
+        g2.fillOval(waitressX, waitressY, tileSize, tileSize);
+        g2.dispose();
 
     }
 
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'mouseClicked'");
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'mousePressed'");
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'mouseReleased'");
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'mouseEntered'");
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'mouseExited'");
-    }
 
 }
