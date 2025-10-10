@@ -1,3 +1,4 @@
+import java.awt.Image;
 import java.util.ArrayList;
 import java.util.Random;
 import javax.swing.*;
@@ -20,15 +21,12 @@ public class Menu {
 
     private void generateItems() {
 
-        ImageIcon item1 = new ImageIcon("cookie.png");
-        ImageIcon item2 = new ImageIcon("cookie.png");
-        ImageIcon item3 = new ImageIcon("cookie.png");
-        ImageIcon item4 = new ImageIcon("cookie.png");
+        Image item1 = new ImageIcon(getClass().getResource("pictures/cookie.png")).getImage();
 
         FoodItem cookie = new FoodItem(new JLabel("Cookie"), item1);
-        FoodItem cookie2 = new FoodItem(new JLabel("Cookie2"), item2);
-        FoodItem cookie3 = new FoodItem(new JLabel("Cookie3"), item3);
-        FoodItem cookie4 = new FoodItem(new JLabel("Cookie4"), item4);
+        FoodItem cookie2 = new FoodItem(new JLabel("Cookie2"), item1);
+        FoodItem cookie3 = new FoodItem(new JLabel("Cookie3"), item1);
+        FoodItem cookie4 = new FoodItem(new JLabel("Cookie4"), item1);
 
         this.menu.add(cookie);
         this.menu.add(cookie2);

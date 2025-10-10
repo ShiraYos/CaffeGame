@@ -1,3 +1,5 @@
+import java.awt.Image;
+
 import javax.swing.*;
 
 /**
@@ -6,9 +8,9 @@ import javax.swing.*;
 public class FoodItem {
 
     JLabel dishName;
-    ImageIcon dishPicture;
+    Image dishPicture;
 
-    public FoodItem(JLabel name, ImageIcon pic) {
+    public FoodItem(JLabel name, Image pic) {
         this.dishName = name;
         this.dishPicture = pic;
     }
@@ -17,7 +19,7 @@ public class FoodItem {
         return this.dishName;
     }
 
-    public ImageIcon getPhoto() {
+    public Image getPhoto() {
         return this.dishPicture;
     }
 
