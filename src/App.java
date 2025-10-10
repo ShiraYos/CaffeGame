@@ -1,5 +1,8 @@
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+
+import java.awt.BorderLayout;
+
 import javax.swing.*;
 
 public class App {
@@ -8,21 +11,14 @@ public class App {
         JFrame frame = new JFrame("CaffeGame");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
-
-        // int rowCount = 12;
-        // int colCount = 16;
-        // int tileSize = 48;
-        // int boardWidth = colCount * tileSize;
-        // int boardHeight = rowCount * tileSize;
-
-        // frame.setSize(boardWidth, boardHeight );
+        frame.setLayout(new BorderLayout());
 
         CaffeGame game = new CaffeGame();
-        frame.add(game);
+        frame.add(game, BorderLayout.CENTER);
 
         frame.pack();
-
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+
     }
 }
