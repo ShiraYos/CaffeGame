@@ -10,7 +10,7 @@ public class Table {
     private final int cols = 4;
 
     private int[][] tablePositions;
-    private BufferedImage tableImage; // ✅ table image
+    private BufferedImage tableImage; 
 
     public Table() {
         tablePositions = new int[rows * cols][2];
