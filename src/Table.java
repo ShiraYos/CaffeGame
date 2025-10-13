@@ -1,14 +1,27 @@
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 
 public class Table {
-    private final int tableSize = 60; // diameter of table
+    private final int tableSize = 60; // image size (diameter)
     private final int rows = 3;
     private final int cols = 4;
 
     private int[][] tablePositions;
+    private BufferedImage tableImage; // ✅ table image
 
     public Table() {
         tablePositions = new int[rows * cols][2];
+
+        // Load image once
+        try {
+            tableImage = ImageIO.read(getClass().getResource("/pictures/table.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+            tableImage = null;
+        }
     }
 
     public void calculatePositions(int panelWidth, int panelHeight) {
@@ -26,15 +39,24 @@ public class Table {
     }
 
     public void drawTables(Graphics g) {
-        g.setColor(new Color(79, 29, 29));
         for (int i = 0; i < tablePositions.length; i++) {
-            int x = tablePositions[i][0];
-            int y = tablePositions[i][1];
-            g.fillOval(x - tableSize / 2, y - tableSize / 2, tableSize, tableSize);
+            int x = tablePositions[i][0] - tableSize / 2;
+            int y = tablePositions[i][1] - tableSize / 2;
+
+            if (tableImage != null) {
+                // 🖼️ Draw image instead of oval
+                g.drawImage(tableImage, x, y, tableSize, tableSize, null);
+            } else {
+                // Fallback if image not found
+                g.setColor(new Color(79, 29, 29));
+                g.fillOval(x, y, tableSize, tableSize);
+                g.setColor(Color.BLACK);
+                g.drawOval(x, y, tableSize, tableSize);
+            }
+
+            // Label
             g.setColor(Color.BLACK);
-            g.drawOval(x - tableSize / 2, y - tableSize / 2, tableSize, tableSize);
-            g.drawString("T" + (i + 1), x - 10, y + tableSize);
-            g.setColor(new Color(79, 29, 29 ));
+            g.drawString("T" + (i + 1), x + tableSize / 2 - 10, y + tableSize + 15);
         }
     }
 
