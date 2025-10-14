@@ -31,7 +31,8 @@ public class CaffeGame extends JPanel {
 
     public CaffeGame() {
         setPreferredSize((new Dimension(boardWidth, boardHeight)));
-        setBackground(Color.pink);
+        setBackground((new Color(110, 67, 50)));
+        
         this.setDoubleBuffered(true);
         this.addMouseListener(mouseH);
         Menu menu = new Menu();
