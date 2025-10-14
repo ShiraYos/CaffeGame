@@ -44,6 +44,7 @@ public class Table {
             int y = tablePositions[i][1] - tableSize / 2;
 
             if (tableImage != null) {
+
                 g.drawImage(tableImage, x, y, tableSize, tableSize, null);
             } else {
                 // Fallback if image not found
