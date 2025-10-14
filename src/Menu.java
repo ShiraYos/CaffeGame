@@ -21,17 +21,20 @@ public class Menu {
 
     private void generateItems() {
 
-        Image item1 = new ImageIcon(getClass().getResource("pictures/cookie.png")).getImage();
+        Image burger = new ImageIcon(getClass().getResource("pictures/burger.png")).getImage();
+        Image cake = new ImageIcon(getClass().getResource("pictures/cake.png")).getImage();
+        Image coffe = new ImageIcon(getClass().getResource("pictures/coffe.png")).getImage();
+        Image iceCream = new ImageIcon(getClass().getResource("pictures/icecream.png")).getImage();
 
-        FoodItem cookie = new FoodItem(new JLabel("Cookie"), item1);
-        FoodItem cookie2 = new FoodItem(new JLabel("Cookie2"), item1);
-        FoodItem cookie3 = new FoodItem(new JLabel("Cookie3"), item1);
-        FoodItem cookie4 = new FoodItem(new JLabel("Cookie4"), item1);
+        FoodItem item1 = new FoodItem(new JLabel("burger"), burger);
+        FoodItem item2 = new FoodItem(new JLabel("cake"), cake);
+        FoodItem item3 = new FoodItem(new JLabel("coffe"), coffe);
+        FoodItem item4 = new FoodItem(new JLabel("icecream"), iceCream);
 
-        this.menu.add(cookie);
-        this.menu.add(cookie2);
-        this.menu.add(cookie3);
-        this.menu.add(cookie4);
+        this.menu.add(item1);
+        this.menu.add(item2);
+        this.menu.add(item3);
+        this.menu.add(item4);
 
     }
 

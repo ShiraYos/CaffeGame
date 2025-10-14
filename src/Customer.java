@@ -6,6 +6,7 @@ public class Customer extends Player {
     String [] reactions;
 
     public Customer() {
+        super(100, 100);
         timeToBeServed = new ProgressBar();
     }
 
