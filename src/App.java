@@ -1,9 +1,5 @@
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-
 import java.awt.BorderLayout;
-
-import javax.swing.*;
+import javax.swing.JFrame;
 
 public class App {
     public static void main(String[] args) throws Exception {
@@ -15,7 +11,6 @@ public class App {
 
         CaffeGame game = new CaffeGame();
         frame.add(game, BorderLayout.CENTER);
-
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
