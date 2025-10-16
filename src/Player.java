@@ -1,19 +1,36 @@
-import java.awt.Image;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
 
 abstract class Player {
 
     protected FoodItem dish;
-    protected Image playerImage;
+    protected BufferedImage playerImage;
 
     protected int playerX;
     protected int playerY;
 
-    public Player() {
-        
-        this.dish = null;
-        this.playerX = 100;
-        this.playerY = 100;
+    public Player(int x, int y) {
+
+        this.playerX = x;
+        this.playerY = y;
+        this.dish = new FoodItem();
     }
+
+    public void setPosition(int x, int y) {
+        this.playerX = x;
+        this.playerY = y;
+    }
+
+    public int getX() {
+        return this.playerX;
+    }
+
+    public int getY() {
+        return this.playerY;
+    }
+
+    abstract void drawPlayer(Graphics g);
 
     public void setDish(FoodItem item) {
         this.dish = item;
@@ -23,11 +40,9 @@ abstract class Player {
         return this.dish;
     }
 
-    public void setPlayerImage(Image image) {
-        this.playerImage = image;
-    }
+    abstract void setPlayerImage();
 
-    public Image getPlayerImage() {
+    public BufferedImage getPlayerImage() {
         return this.playerImage;
     }
 }

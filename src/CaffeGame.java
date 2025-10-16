@@ -7,23 +7,17 @@ import javax.swing.*;
 public class CaffeGame extends JPanel {
 
     // SCREEN SETTINGS
-
-    int rowCount = 12;
-    int colCount = 16;
+    int rowCount = 15;
+    int colCount = 18;
     int tileSize = 48;
     int boardWidth = colCount * tileSize;
     int boardHeight = rowCount * tileSize;
 
     MouseHandler mouseH = new MouseHandler();
 
-    // Set waitress default position
-    int waitressX = 100;
-    int waitressY = 100;
-    int waitresSpeed = 6;
-    Image icon;
-
     Table table;
     Waitress waitress;
+    Customer customer;
 
     List<Point> path = new ArrayList<>();
     Timer timer;
@@ -34,23 +28,23 @@ public class CaffeGame extends JPanel {
         setBackground(Color.pink);
         this.setDoubleBuffered(true);
         this.addMouseListener(mouseH);
-        Menu menu = new Menu();
-        icon = menu.randomFoodItem().getPhoto();
 
         timer = new Timer(16, e -> {
-            update();
+
             repaint();
         });
         timer.start();
 
         table = new Table();
         waitress = new Waitress(50, 500); // initial position
+        customer = new Customer();
 
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (isMoving)
+                if (isMoving) {
                     return;
+                }
 
                 for (int[] pos : table.getTablePositions()) {
                     int radius = table.getTableSize() / 2;
@@ -65,25 +59,6 @@ public class CaffeGame extends JPanel {
         });
     }
 
-    public void update() {
-
-        if (mouseH.clickedLocation == null)
-            return; // no click yet
-
-        double targetX = mouseH.clickedLocation.getX();
-        double targetY = mouseH.clickedLocation.getY();
-
-        double directionX = targetX - waitressX;
-        double directionY = targetY - waitressY;
-        double distance = Math.sqrt(Math.pow(directionX, 2) + Math.pow(directionY, 2));
-
-        if (distance > 5) { // only move if not already close enough
-            waitressX += (directionX / distance) * waitresSpeed;
-            waitressY += (directionY / distance) * waitresSpeed;
-        }
-
-    }
-
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -91,20 +66,21 @@ public class CaffeGame extends JPanel {
 
         table.calculatePositions(getWidth(), getHeight());
         table.drawTables(g2);
-        waitress.drawWaitress(g2);
+        waitress.drawPlayer(g2);
+        customer.drawPlayer(g2);
+        customer.drawBubble(g2);
 
         // Draw side panel
-        int panelX = getWidth() - 650; 
-        int panelY = getHeight()-50;
+        int panelX = getWidth() - 650;
+        int panelY = getHeight() - 50;
         int panelWidth = 220;
         int panelHeight = 150;
 
-        g.setColor(new Color(200, 200, 200)); 
+        g.setColor(new Color(200, 200, 200));
         g.fillRect(panelX, panelY, panelWidth, panelHeight);
 
-        g.setColor(Color.BLACK); 
+        g.setColor(Color.BLACK);
         g.drawRect(panelX, panelY, panelWidth, panelHeight);
-
 
     }
 
