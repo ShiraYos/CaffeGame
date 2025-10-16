@@ -1,6 +1,6 @@
-import java.awt.Image;
-
 import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 
 /**
  * This class describes a food item in the menu.
@@ -8,18 +8,31 @@ import javax.swing.*;
 public class FoodItem {
 
     JLabel dishName;
-    Image dishPicture;
+    BufferedImage dishPicture;
 
-    public FoodItem(JLabel name, Image pic) {
+    public FoodItem(JLabel name, BufferedImage pic) {
         this.dishName = name;
         this.dishPicture = pic;
+    }
+
+    public FoodItem(FoodItem item) {
+        this.dishName = item.getName();
+        this.dishPicture = item.getPhoto();
+    }
+
+    public FoodItem(){
+        Menu menu = new Menu();
+        FoodItem item = menu.randomFoodItem();
+
+        this.dishName = item.getName();
+        this.dishPicture = item.getPhoto();
     }
 
     public JLabel getName() {
         return this.dishName;
     }
 
-    public Image getPhoto() {
+    public BufferedImage getPhoto() {
         return this.dishPicture;
     }
 

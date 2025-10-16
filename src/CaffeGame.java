@@ -7,9 +7,8 @@ import javax.swing.*;
 public class CaffeGame extends JPanel {
 
     // SCREEN SETTINGS
-
-    int rowCount = 12;
-    int colCount = 16;
+    int rowCount = 15;
+    int colCount = 18;
     int tileSize = 48;
     int boardWidth = colCount * tileSize;
     int boardHeight = rowCount * tileSize;
@@ -17,7 +16,8 @@ public class CaffeGame extends JPanel {
     MouseHandler mouseH = new MouseHandler();
 
     Table table;
-    Player waitress;
+    Waitress waitress;
+    Customer customer;
 
     List<Point> path = new ArrayList<>();
     Timer timer;
@@ -37,12 +37,14 @@ public class CaffeGame extends JPanel {
 
         table = new Table();
         waitress = new Waitress(50, 500); // initial position
+        customer = new Customer();
 
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (isMoving)
+                if (isMoving) {
                     return;
+                }
 
                 for (int[] pos : table.getTablePositions()) {
                     int radius = table.getTableSize() / 2;
@@ -64,7 +66,9 @@ public class CaffeGame extends JPanel {
 
         table.calculatePositions(getWidth(), getHeight());
         table.drawTables(g2);
-        waitress.drawWaitress(g2);
+        waitress.drawPlayer(g2);
+        customer.drawPlayer(g2);
+        customer.drawBubble(g2);
 
         // Draw side panel
         int panelX = getWidth() - 650;
