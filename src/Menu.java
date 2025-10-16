@@ -1,6 +1,7 @@
-import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Random;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 /**
@@ -21,17 +22,15 @@ public class Menu {
 
     private void generateItems() {
 
-        Image item1 = new ImageIcon(getClass().getResource("pictures/cookie.png")).getImage();
-
-        FoodItem cookie = new FoodItem(new JLabel("Cookie"), item1);
-        FoodItem cookie2 = new FoodItem(new JLabel("Cookie2"), item1);
-        FoodItem cookie3 = new FoodItem(new JLabel("Cookie3"), item1);
-        FoodItem cookie4 = new FoodItem(new JLabel("Cookie4"), item1);
-
-        this.menu.add(cookie);
-        this.menu.add(cookie2);
-        this.menu.add(cookie3);
-        this.menu.add(cookie4);
+        try {
+            menu.add(new FoodItem(new JLabel("Burger"), ImageIO.read(getClass().getResource("/pictures/burger.png"))));
+            menu.add(new FoodItem(new JLabel("Cake"), ImageIO.read(getClass().getResource("/pictures/cake.png"))));
+            menu.add(new FoodItem(new JLabel("Coffee"), ImageIO.read(getClass().getResource("/pictures/coffee.png"))));
+            menu.add(new FoodItem(new JLabel("IceCream"), ImageIO.read(getClass().getResource("/pictures/iceCream.png"))));
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 

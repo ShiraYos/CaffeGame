@@ -10,7 +10,8 @@ public class ProgressBar {
     private int counter = 100;
 
     public ProgressBar() {
-        bar.setValue(0);
+        bar.setValue(100);
+        bar.setStringPainted(true);
         bar.setPreferredSize(new Dimension(420, 30));
         panel.add(bar);
         panel.setPreferredSize(new Dimension(420, 30));
@@ -30,6 +31,10 @@ public class ProgressBar {
 
     public JPanel getPanel() {
         return this.panel;
+    }
+
+    public JProgressBar getProgressBar() {
+        return this.bar;
     }
 
     public void setDelay(int d) {
