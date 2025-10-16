@@ -4,21 +4,33 @@ import javax.swing.*;
 public class ProgressBar {
 
     private JPanel panel = new JPanel(null);
-    public JProgressBar bar = new JProgressBar();
-    private int delay = 500;
+    private JProgressBar bar = new JProgressBar(SwingConstants.VERTICAL);
+    private int delay = 200;
     private Timer timer;
     private int counter = 100;
 
     public ProgressBar() {
         bar.setValue(100);
-        bar.setStringPainted(true);
-        bar.setPreferredSize(new Dimension(420, 30));
+        bar.setForeground(Color.red);
+        bar.setMinimum(0);
+        bar.setMaximum(100);
+        bar.setBounds(0, 0, 10, 50);
+
+        panel.setLayout(null);
+        panel.setOpaque(false);
+        panel.setPreferredSize(new Dimension(10, 50));
         panel.add(bar);
-        panel.setPreferredSize(new Dimension(420, 30));
 
     }
 
     public void startProgressBar() {
+        
+        counter = 100;
+
+        if (timer != null && timer.isRunning()) {
+            timer.stop();
+        }
+
         timer = new Timer(delay, e -> {
             counter--;
             bar.setValue(counter);
@@ -26,7 +38,8 @@ public class ProgressBar {
                 ((Timer) e.getSource()).stop();
             }
         });
-        timer.start();;
+        timer.start();
+        ;
     }
 
     public JPanel getPanel() {
@@ -41,8 +54,9 @@ public class ProgressBar {
         this.delay = d;
     }
 
-    public void setCounter() {
+    public void resetCounter() {
         this.counter = 100;
+        bar.setValue(100);
     }
 
 }

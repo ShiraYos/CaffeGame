@@ -5,12 +5,14 @@ import javax.swing.JPanel;
 
 public class Customer extends Player {
 
-    ProgressBar timeToBeServed;
+    protected ProgressBar progressBar;
+    protected boolean nextToTable;
 
     public Customer() {
         super(50, 50);
         setPlayerImage();
-        timeToBeServed = new ProgressBar();
+        this.nextToTable = false;
+        progressBar = new ProgressBar();
     }
 
     @Override
@@ -42,11 +44,26 @@ public class Customer extends Player {
         }
     }
 
+    public boolean isNextToTable() {
+        return this.nextToTable;
+    }
+
+    public void setNextToTable(boolean nearTable) {
+        this.nextToTable = nearTable;
+    }
 
     void drawBubble(Graphics g) {
         if (dish != null && dish.getPhoto() != null) {
             BufferedImage img = dish.getPhoto();
-            g.drawImage(img, playerX + 50, playerY - 30, 40, 40, null);
+
+            g.setColor(Color.white);
+            g.fillOval(playerX + 50, playerY - 30, 44, 44);
+            g.drawOval(playerX + 50, playerY - 30, 44, 44);
+
+            g.fillRect(playerX + 52, playerY, 20, 10);;
+            g.drawOval(playerX + 52, playerY, 20, 10);
+
+            g.drawImage(img, playerX + 51, playerY - 28, 40, 40, null);
         }
     }
 

@@ -29,15 +29,20 @@ public class CaffeGame extends JPanel {
         this.setDoubleBuffered(true);
         this.addMouseListener(mouseH);
 
-        timer = new Timer(16, e -> {
+        // timer = new Timer(16, e -> {
 
-            repaint();
-        });
-        timer.start();
+        // repaint();
+        // });
+        // timer.start();
 
         table = new Table();
         waitress = new Waitress(50, 500); // initial position
         customer = new Customer();
+
+        // Set progress bar
+        JPanel barPanel = customer.progressBar.getPanel();
+        this.add(barPanel);
+        customer.progressBar.startProgressBar();
 
         addMouseListener(new MouseAdapter() {
             @Override
@@ -69,6 +74,15 @@ public class CaffeGame extends JPanel {
         waitress.drawPlayer(g2);
         customer.drawPlayer(g2);
         customer.drawBubble(g2);
+
+        // Add progress bar
+        if (customer.progressBar != null) {
+            JPanel barPanel = customer.progressBar.getPanel();
+            barPanel.setBounds(
+                    customer.getX() - 5,
+                    customer.getY() - 5,
+                    10, 50);
+        }
 
         // Draw side panel
         int panelX = getWidth() - 650;
