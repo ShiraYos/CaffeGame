@@ -1,13 +1,17 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 public class CaffeGame extends JPanel {
 
     // SCREEN SETTINGS
-    int rowCount = 15;
+    int rowCount = 13;
     int colCount = 18;
     int tileSize = 48;
     int boardWidth = colCount * tileSize;
@@ -18,6 +22,8 @@ public class CaffeGame extends JPanel {
     Table table;
     Waitress waitress;
     Customer customer;
+    Kitchen kitchen;
+    TileManager tileManager;
 
     List<Point> path = new ArrayList<>();
     Timer timer;
@@ -25,7 +31,8 @@ public class CaffeGame extends JPanel {
 
     public CaffeGame() {
         setPreferredSize((new Dimension(boardWidth, boardHeight)));
-        setBackground(Color.pink);
+        tileManager = new TileManager(this);
+        // setBackground(Color.pink);
         this.setDoubleBuffered(true);
         this.addMouseListener(mouseH);
 
@@ -38,11 +45,11 @@ public class CaffeGame extends JPanel {
         table = new Table();
         waitress = new Waitress(50, 500); // initial position
         customer = new Customer();
+        kitchen = new Kitchen();
 
-        // Set progress bar
-        JPanel barPanel = customer.progressBar.getPanel();
-        this.add(barPanel);
-        customer.progressBar.startProgressBar();
+        // // Set progress bar
+        // JPanel barPanel = customer.progressBar.getPanel();
+        // this.add(barPanel);
 
         addMouseListener(new MouseAdapter() {
             @Override
@@ -69,32 +76,16 @@ public class CaffeGame extends JPanel {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
 
+        tileManager.draw(g);
+
         table.calculatePositions(getWidth(), getHeight());
         table.drawTables(g2);
         waitress.drawPlayer(g2);
         customer.drawPlayer(g2);
-        customer.drawBubble(g2);
-
-        // Add progress bar
-        if (customer.progressBar != null) {
-            JPanel barPanel = customer.progressBar.getPanel();
-            barPanel.setBounds(
-                    customer.getX() - 5,
-                    customer.getY() - 5,
-                    10, 50);
-        }
+        customer.drawBubble(g2, this.kitchen, this);
 
         // Draw side panel
-        int panelX = getWidth() - 650;
-        int panelY = getHeight() - 50;
-        int panelWidth = 220;
-        int panelHeight = 150;
-
-        g.setColor(new Color(200, 200, 200));
-        g.fillRect(panelX, panelY, panelWidth, panelHeight);
-
-        g.setColor(Color.BLACK);
-        g.drawRect(panelX, panelY, panelWidth, panelHeight);
+        kitchen.drawKitchen(g2, getWidth(), getHeight());
 
     }
 

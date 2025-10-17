@@ -27,6 +27,7 @@ public class Menu {
             menu.add(new FoodItem(new JLabel("Cake"), ImageIO.read(getClass().getResource("/pictures/cake.png"))));
             menu.add(new FoodItem(new JLabel("Coffee"), ImageIO.read(getClass().getResource("/pictures/coffee.png"))));
             menu.add(new FoodItem(new JLabel("IceCream"), ImageIO.read(getClass().getResource("/pictures/icecream.png"))));
+            menu.add(new FoodItem(new JLabel("Orange juice"), ImageIO.read(getClass().getResource("/pictures/orange.png"))));
             
         } catch (Exception e) {
             e.printStackTrace();
@@ -40,6 +41,10 @@ public class Menu {
         FoodItem randomDish = menu.get(place);
 
         return randomDish;
+    }
+
+    public ArrayList<FoodItem> getMenu() {
+        return this.menu;
     }
 
 }

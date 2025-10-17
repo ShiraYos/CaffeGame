@@ -24,10 +24,10 @@ public class Waitress extends Player {
     @Override
     void setPlayerImage() {
         try {
-            BufferedImage original = ImageIO.read(getClass().getResource("/pictures/waitress.png"));
+            BufferedImage original = ImageIO.read(getClass().getResource("/pictures/waitress2.png"));
 
-            Image tmp = original.getScaledInstance(70, 70, Image.SCALE_SMOOTH); // scale image
-            this.playerImage = new BufferedImage(70, 70, BufferedImage.TYPE_INT_ARGB);
+            Image tmp = original.getScaledInstance(100, 100, Image.SCALE_SMOOTH); // scale image
+            this.playerImage = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
 
             Graphics2D g2 = this.playerImage.createGraphics();
             g2.drawImage(tmp, 0, 0, null);
