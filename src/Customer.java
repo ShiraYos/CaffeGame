@@ -1,16 +1,12 @@
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
-import javax.swing.JPanel;
 
 public class Customer extends Player {
 
-    ProgressBar timeToBeServed;
-
-    public Customer() {
-        super(50, 50);
+    public Customer(int x, int y) {
+        super(x, y);
         setPlayerImage();
-        timeToBeServed = new ProgressBar();
     }
 
     @Override
@@ -18,18 +14,17 @@ public class Customer extends Player {
         if (this.playerImage != null) {
             g.drawImage(this.playerImage, this.playerX, this.playerY, null);
         } else {
-            // Fallback if image not found
-
+            // fallback if image not found
+            g.setColor(Color.BLUE);
+            g.fillOval(playerX, playerY, 50, 50);
         }
-
     }
 
     @Override
     void setPlayerImage() {
         try {
             BufferedImage original = ImageIO.read(getClass().getResource("/pictures/waitress.png"));
-
-            Image tmp = original.getScaledInstance(70, 70, Image.SCALE_SMOOTH); // scale image
+            Image tmp = original.getScaledInstance(70, 70, Image.SCALE_SMOOTH);
             this.playerImage = new BufferedImage(70, 70, BufferedImage.TYPE_INT_ARGB);
 
             Graphics2D g2 = this.playerImage.createGraphics();
@@ -38,10 +33,9 @@ public class Customer extends Player {
 
         } catch (Exception e) {
             e.printStackTrace();
-            this.playerImage = null; // fallback to circle
+            this.playerImage = null;
         }
     }
-
 
     void drawBubble(Graphics g) {
         if (dish != null && dish.getPhoto() != null) {
@@ -49,5 +43,4 @@ public class Customer extends Player {
             g.drawImage(img, playerX + 50, playerY - 30, 40, 40, null);
         }
     }
-
 }
