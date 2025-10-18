@@ -53,7 +53,7 @@ public class Customer extends Player {
     }
 
     void drawBubble(Graphics g, Kitchen kitchen, CaffeGame game) {
-        if (dish != null && dish.getPhoto() != null) {
+        if (isNextToTable() && dish != null && dish.getPhoto() != null) {
             BufferedImage img = dish.getPhoto();
 
             g.setColor(Color.white);
