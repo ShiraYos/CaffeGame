@@ -7,7 +7,7 @@
         public class CaffeGame extends JPanel {
 
             //SCREEN SETTINGS 
-            int rowCount = 15;
+            int rowCount = 13;
             int colCount = 18;
             int tileSize = 48;
             int boardWidth = colCount * tileSize;
@@ -16,6 +16,8 @@
             MouseHandler mouseH = new MouseHandler();
             Table table;
             Waitress waitress;
+            Kitchen kitchen;
+            TileManager tileManager;
 
             Customer selectedCustomer = null;
             List<Customer> customers = new ArrayList<>();
@@ -27,7 +29,7 @@
 
             public CaffeGame() {
                 setPreferredSize(new Dimension(boardWidth, boardHeight));
-                setBackground(Color.pink);
+                tileManager = new TileManager(this);
                 setDoubleBuffered(true);
                 addMouseListener(mouseH);
 
@@ -36,6 +38,7 @@
 
                 table = new Table();
                 waitress = new Waitress(50, 500);
+                kitchen = new Kitchen();
 
                 int startX = boardWidth - 120;
                 for (int i = 0; i < 3; i++) {
@@ -48,24 +51,18 @@
                 super.paintComponent(g);
                 Graphics2D g2 = (Graphics2D) g;
 
+                tileManager.draw(g);
                 table.calculatePositions(getWidth(), getHeight());
                 table.drawTables(g2);
                 waitress.drawPlayer(g2);
 
                 for (Customer c : customers) {
                     c.drawPlayer(g2);
-                    c.drawBubble(g2);
+                    c.drawBubble(g2, kitchen, this);
                 }
 
-                // small panel at bottom
-                int panelX = getWidth() - 650;
-                int panelY = getHeight() - 50;
-                int panelWidth = 220;
-                int panelHeight = 150;
-                g.setColor(new Color(200, 200, 200));
-                g.fillRect(panelX, panelY, panelWidth, panelHeight);
-                g.setColor(Color.BLACK);
-                g.drawRect(panelX, panelY, panelWidth, panelHeight);
+                // Draw side panel
+                kitchen.drawKitchen(g2, getWidth(), getHeight());
             }
 
             private class MouseHandler extends MouseAdapter {
@@ -118,6 +115,8 @@
                     public void actionPerformed(ActionEvent e) {
                         if (targetIndex >= path.size()) {
                             moveTimer.stop();
+                            customer.nextToTable = true;
+                            customer.progressBar.startProgressBar();
                             return;
                         }
 

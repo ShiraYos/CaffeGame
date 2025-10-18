@@ -7,8 +7,8 @@ import java.awt.image.BufferedImage;
  */
 public class FoodItem {
 
-    JLabel dishName;
-    BufferedImage dishPicture;
+    protected JLabel dishName;
+    protected BufferedImage dishPicture;
 
     public FoodItem(JLabel name, BufferedImage pic) {
         this.dishName = name;

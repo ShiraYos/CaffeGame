@@ -2,15 +2,18 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+
 import javax.imageio.ImageIO;
+import javax.swing.JButton;
 
 public class Table {
-    private final int tableSize = 60; // image size (diameter)
+    private final int tableSize = 70;
     private final int rows = 3;
     private final int cols = 4;
 
     private int[][] tablePositions;
-    private BufferedImage tableImage; 
+    private BufferedImage tableImage;
 
     public Table() {
         tablePositions = new int[rows * cols][2];
@@ -60,6 +63,7 @@ public class Table {
         }
     }
 
+    
     public int[][] getTablePositions() {
         return tablePositions;
     }

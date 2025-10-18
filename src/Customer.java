@@ -1,12 +1,18 @@
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
+import javax.swing.JPanel;
 
 public class Customer extends Player {
+
+    protected ProgressBar progressBar;
+    protected boolean nextToTable;
 
     public Customer(int x, int y) {
         super(x, y);
         setPlayerImage();
+        this.nextToTable = false;
+        progressBar = new ProgressBar();
     }
 
     @Override
@@ -23,9 +29,10 @@ public class Customer extends Player {
     @Override
     void setPlayerImage() {
         try {
-            BufferedImage original = ImageIO.read(getClass().getResource("/pictures/waitress.png"));
-            Image tmp = original.getScaledInstance(70, 70, Image.SCALE_SMOOTH);
-            this.playerImage = new BufferedImage(70, 70, BufferedImage.TYPE_INT_ARGB);
+            BufferedImage original = ImageIO.read(getClass().getResource("/pictures/waitress2.png"));
+
+            Image tmp = original.getScaledInstance(100, 100, Image.SCALE_SMOOTH); // scale image
+            this.playerImage = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
 
             Graphics2D g2 = this.playerImage.createGraphics();
             g2.drawImage(tmp, 0, 0, null);
@@ -37,10 +44,38 @@ public class Customer extends Player {
         }
     }
 
-    void drawBubble(Graphics g) {
-        if (dish != null && dish.getPhoto() != null) {
+    public boolean isNextToTable() {
+        return this.nextToTable;
+    }
+
+    public void setNextToTable(boolean nearTable) {
+        this.nextToTable = nearTable;
+    }
+
+    void drawBubble(Graphics g, Kitchen kitchen, CaffeGame game) {
+        if (isNextToTable() && dish != null && dish.getPhoto() != null) {
             BufferedImage img = dish.getPhoto();
-            g.drawImage(img, playerX + 50, playerY - 30, 40, 40, null);
+
+            g.setColor(Color.white);
+            g.fillOval(playerX + 65, playerY - 30, 44, 44);
+            g.drawOval(playerX + 65, playerY - 30, 44, 44);
+
+            g.fillRect(playerX + 67, playerY, 20, 10);
+            g.drawOval(playerX + 67, playerY, 20, 10);
+            g.drawImage(img, playerX + 66, playerY - 28, 40, 40, null);
+
+            // Add progress bar
+
+            if (this.progressBar != null) {
+                JPanel barPanel = this.progressBar.getPanel();
+                game.add(barPanel);
+                barPanel.setBounds(
+                        this.getX() + 10,
+                        this.getY(),
+                        10, 50);
+
+            }
+
         }
     }
 }
