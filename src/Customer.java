@@ -8,8 +8,8 @@ public class Customer extends Player {
     protected ProgressBar progressBar;
     protected boolean nextToTable;
 
-    public Customer() {
-        super(50, 50);
+    public Customer(int x, int y) {
+        super(x, y);
         setPlayerImage();
         this.nextToTable = false;
         progressBar = new ProgressBar();
@@ -20,10 +20,10 @@ public class Customer extends Player {
         if (this.playerImage != null) {
             g.drawImage(this.playerImage, this.playerX, this.playerY, null);
         } else {
-            // Fallback if image not found
-
+            // fallback if image not found
+            g.setColor(Color.BLUE);
+            g.fillOval(playerX, playerY, 50, 50);
         }
-
     }
 
     @Override
@@ -40,7 +40,7 @@ public class Customer extends Player {
 
         } catch (Exception e) {
             e.printStackTrace();
-            this.playerImage = null; // fallback to circle
+            this.playerImage = null;
         }
     }
 
@@ -65,6 +65,7 @@ public class Customer extends Player {
             g.drawImage(img, playerX + 66, playerY - 28, 40, 40, null);
 
             // Add progress bar
+
             if (this.progressBar != null) {
                 JPanel barPanel = this.progressBar.getPanel();
                 game.add(barPanel);
@@ -73,10 +74,8 @@ public class Customer extends Player {
                         this.getY(),
                         10, 50);
 
-                this.progressBar.startProgressBar();
-
             }
+
         }
     }
-
 }

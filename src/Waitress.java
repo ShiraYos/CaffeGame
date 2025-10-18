@@ -13,11 +13,11 @@ public class Waitress extends Player {
 
     @Override
     void drawPlayer(Graphics g) {
-        if (this.playerImage != null) {
-            g.drawImage(this.playerImage, this.playerX - this.playerImage.getWidth() / 2,
-                    this.playerY - this.playerImage.getHeight() / 2, null);
+        if (this.getPlayerImage() != null) {
+            g.drawImage(this.getPlayerImage(), this.getX() - this.getPlayerImage().getWidth()/2, this.getY() - this.getPlayerImage().getHeight()/2, null);
         } else {
-            // Fallback if image not found
+            g.setColor(Color.RED);
+            g.fillOval(this.getX() - 10, this.getY() - 10, 20, 20);
         }
     }
 
