@@ -1,228 +1,225 @@
-        import java.awt.*;
-        import java.awt.event.*;
-        import java.util.ArrayList;
-        import java.util.List;
-        import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.*;
 
-        public class CaffeGame extends JPanel {
+public class CaffeGame extends JPanel {
 
-            //SCREEN SETTINGS 
-            int rowCount = 13;
-            int colCount = 18;
-            int tileSize = 48;
-            int boardWidth = colCount * tileSize;
-            int boardHeight = rowCount * tileSize;
+//SCREEN SETTINGS 
+int rowCount = 13;
+    int colCount = 18;
+    int tileSize = 48;
+    int boardWidth = colCount * tileSize;
+    int boardHeight = rowCount * tileSize;
 
-            MouseHandler mouseH = new MouseHandler();
-            Table table;
-            Waitress waitress;
-            Kitchen kitchen;
-            TileManager tileManager;
+    MouseHandler mouseH = new MouseHandler();
+    Table table;
+    Waitress waitress;
+    Kitchen kitchen;
+    TileManager tileManager;
 
-            Customer selectedCustomer = null;
-            List<Customer> customers = new ArrayList<>();
+    Customer selectedCustomer = null;
+    List<Customer> customers = new ArrayList<>();
 
-            List<Point> path = new ArrayList<>();
-            Timer timer;
-            boolean waitressMoving = false;
-            boolean customerSelected = false;
+    List<Point> path = new ArrayList<>();
+    Timer timer;
+    boolean waitressMoving = false;
+    boolean customerSelected = false;
 
-            public CaffeGame() {
-                setPreferredSize(new Dimension(boardWidth, boardHeight));
-                tileManager = new TileManager(this);
-                setDoubleBuffered(true);
-                addMouseListener(mouseH);
+    public CaffeGame() {
+        setPreferredSize(new Dimension(boardWidth, boardHeight));
+        tileManager = new TileManager(this);
+        setDoubleBuffered(true);
+        addMouseListener(mouseH);
 
-                timer = new Timer(16, e -> repaint());
-                timer.start();
+        timer = new Timer(16, e -> repaint());
+        timer.start();
 
-                table = new Table();
-                waitress = new Waitress(50, 500);
-                kitchen = new Kitchen();
+        table = new Table();
+        waitress = new Waitress(50, 500);
+        kitchen = new Kitchen();
 
-                int startX = boardWidth - 120;
-                for (int i = 0; i < 3; i++) {
-                    customers.add(new Customer(startX, 150 + i * 100));
-                }
-            }
-
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                Graphics2D g2 = (Graphics2D) g;
-
-                tileManager.draw(g);
-                table.calculatePositions(getWidth(), getHeight());
-                table.drawTables(g2);
-                waitress.drawPlayer(g2);
-
-                for (Customer c : customers) {
-                    c.drawPlayer(g2);
-                    c.drawBubble(g2, kitchen, this);
-                }
-
-                // Draw side panel
-                kitchen.drawKitchen(g2, getWidth(), getHeight());
-            }
-
-            private class MouseHandler extends MouseAdapter {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                
-        if (waitressMoving && !customerSelected) return;
-
-
-                    int clickedX = e.getX();
-                    int clickedY = e.getY();
-
-                    // check if customer is clicked
-                    for (Customer c : customers) {
-                        Rectangle rect = new Rectangle(c.getX(), c.getY(), 70, 70);
-                        if (rect.contains(clickedX, clickedY)) {
-                            selectedCustomer = c;
-                            customerSelected = true;
-                            return;
-                        }
-                    }
-
-                    // check if table is clicked
-                    for (int[] pos : table.getTablePositions()) {
-                        int radius = table.getTableSize() / 2;
-                        double dist = Math.sqrt(Math.pow(clickedX - pos[0], 2) + Math.pow(clickedY - pos[1], 2));
-                        if (dist <= radius) {
-                            if (customerSelected && selectedCustomer != null) {
-                                List<Point> customerPath = createPath(selectedCustomer.getX(), selectedCustomer.getY(), pos[0], pos[1]);
-                                startCustomerAnimation(selectedCustomer, customerPath);
-                                selectedCustomer = null;
-                                customerSelected = false;
-                            } else {
-                                List<Point> waitressPath = createPath(waitress.getX(), waitress.getY(), pos[0], pos[1]);
-                                startWaitressAnimation(waitressPath);
-                            }
-                            break;
-                        }
-                    }
-                }
-            }
-
-            private void startCustomerAnimation(Customer customer, List<Point> path) {
-                Timer moveTimer = new Timer(10, null);
-                moveTimer.addActionListener(new ActionListener() {
-                    private int targetIndex = 1;
-                    private final double speed = 2.0;
-
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        if (targetIndex >= path.size()) {
-                            moveTimer.stop();
-                            customer.nextToTable = true;
-                            customer.progressBar.startProgressBar();
-                            return;
-                        }
-
-                        Point target = path.get(targetIndex);
-                        int currentX = customer.getX();
-                        int currentY = customer.getY();
-
-                        double dx = target.x - currentX;
-                        double dy = target.y - currentY;
-                        double distance = Math.sqrt(dx * dx + dy * dy);
-
-                        if (distance <= speed) {
-                            customer.setPosition(target.x, target.y);
-                            targetIndex++;
-                        } else {
-                            double stepX = (dx / distance) * speed;
-                            double stepY = (dy / distance) * speed;
-                            customer.setPosition((int) (currentX + stepX), (int) (currentY + stepY));
-                        }
-
-                        repaint();
-                    }
-                });
-                moveTimer.start();
-            }
-
-            private void startWaitressAnimation(List<Point> originalPath) {
-                waitressMoving = true;
-            
-                // Make a copy of the original path so we don't mutate it
-                List<Point> path = new ArrayList<>(originalPath);
-            
-                Timer moveTimer = new Timer(10, null);
-                moveTimer.addActionListener(new ActionListener() {
-                    private int targetIndex = 1;
-                    private final double speed = 2.0;
-                    private boolean returning = false;
-            
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        if (targetIndex >= path.size()) {
-                            if (!returning) {
-                                // Build clean reverse path
-                                List<Point> reversed = new ArrayList<>();
-                                for (int i = path.size() - 2; i >= 0; i--) { 
-                                    reversed.add(path.get(i));
-                                }
-            
-                                path.clear();
-                                path.addAll(reversed);
-            
-                                targetIndex = 0;   
-                                returning = true;
-                                return;
-                            } else {
-                                moveTimer.stop();
-                                waitressMoving = false;
-                                return;
-                            }
-                        }
-            
-                        Point target = path.get(targetIndex);
-                        int currentX = waitress.getX();
-                        int currentY = waitress.getY();
-            
-                        double dx = target.x - currentX;
-                        double dy = target.y - currentY;
-                        double distance = Math.sqrt(dx * dx + dy * dy);
-            
-                        if (distance <= speed) {
-                            waitress.setPosition(target.x, target.y);
-                            targetIndex++;
-                        } else {
-                            double stepX = (dx / distance) * speed;
-                            double stepY = (dy / distance) * speed;
-                            waitress.setPosition((int) (currentX + stepX), (int) (currentY + stepY));
-                        }
-            
-                        repaint();
-                    }
-                });
-                moveTimer.start();
-            }
-            
-            private List<Point> createPath(int startX, int startY, int targetX, int targetY) {
-                List<Point> path = new ArrayList<>();
-                int panelWidth = getWidth();
-
-                int leftSafeX = 50;
-                int rightSafeX = panelWidth - 50;
-
-                double leftDist = Math.abs(startX - leftSafeX)
-                        + Math.abs(startY - (targetY - table.getTableSize() / 2 - 20))
-                        + Math.abs(leftSafeX - targetX);
-
-                double rightDist = Math.abs(startX - rightSafeX)
-                        + Math.abs(startY - (targetY - table.getTableSize() / 2 - 20))
-                        + Math.abs(rightSafeX - targetX);
-
-                int safeX = (leftDist <= rightDist) ? leftSafeX : rightSafeX;
-
-                path.add(new Point(startX, startY));
-                path.add(new Point(safeX, startY));
-                path.add(new Point(safeX, targetY - table.getTableSize() / 2 - 20));
-                path.add(new Point(targetX, targetY - table.getTableSize() / 2 - 20));
-
-                return path;
-            }
+        int startX = boardWidth - 120;
+        for (int i = 0; i < 3; i++) {
+            customers.add(new Customer(startX, 150 + i * 100));
         }
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2 = (Graphics2D) g;
+
+        tileManager.draw(g);
+        table.calculatePositions(getWidth(), getHeight());
+        table.drawTables(g2);
+        waitress.drawPlayer(g2);
+
+        for (Customer c : customers) {
+            c.drawPlayer(g2);
+            c.drawBubble(g2, kitchen, this);
+        }
+
+        // Draw side panel
+        kitchen.drawKitchen(g2, getWidth(), getHeight());
+    }
+
+    private class MouseHandler extends MouseAdapter {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            int clickedX = e.getX();
+            int clickedY = e.getY();
+
+        // check if customer is clicked
+        for (Customer c : customers) {
+        Rectangle rect = new Rectangle(c.getX(), c.getY(), 70, 70);
+        if (rect.contains(clickedX, clickedY)) {
+            selectedCustomer = c;
+            customerSelected = true;
+            return;
+        }
+        }
+
+        // check if table is clicked
+        for (int[] pos : table.getTablePositions()) {
+        int radius = table.getTableSize() / 2;
+        double dist = Math.sqrt(Math.pow(clickedX - pos[0], 2) + Math.pow(clickedY - pos[1], 2));
+        if (dist <= radius) {
+            if (customerSelected && selectedCustomer != null) {
+                List<Point> customerPath = createPath(selectedCustomer.getX(), selectedCustomer.getY(), pos[0], pos[1]);
+                startCustomerAnimation(selectedCustomer, customerPath);
+                selectedCustomer = null;
+                customerSelected = false;
+            } else {
+                List<Point> waitressPath = createPath(waitress.getX(), waitress.getY(), pos[0], pos[1]);
+                startWaitressAnimation(waitressPath);
+            }
+            break;
+        }
+        }
+        }
+
+
+        private void startCustomerAnimation(Customer customer, List<Point> path) {
+            Timer moveTimer = new Timer(10, null);
+            moveTimer.addActionListener(new ActionListener() {
+                private int targetIndex = 1;
+                private final double speed = 2.0;
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (targetIndex >= path.size()) {
+                        moveTimer.stop();
+                        customer.nextToTable = true;
+                        customer.progressBar.startProgressBar();
+                        return;
+                    }
+
+                    Point target = path.get(targetIndex);
+                    int currentX = customer.getX();
+                    int currentY = customer.getY();
+
+                    double dx = target.x - currentX;
+                    double dy = target.y - currentY;
+                    double distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance <= speed) {
+                        customer.setPosition(target.x, target.y);
+                        targetIndex++;
+                    } else {
+                        double stepX = (dx / distance) * speed;
+                        double stepY = (dy / distance) * speed;
+                        customer.setPosition((int) (currentX + stepX), (int) (currentY + stepY));
+                    }
+
+                    repaint();
+                }
+            });
+            moveTimer.start();
+        }
+
+        private void startWaitressAnimation(List<Point> originalPath) {
+        waitressMoving = true;
+        
+            // Make a copy of the original path so we don't mutate it
+            List<Point> path = new ArrayList<>(originalPath);
+        
+            Timer moveTimer = new Timer(10, null);
+            moveTimer.addActionListener(new ActionListener() {
+                private int targetIndex = 1;
+                private final double speed = 2.0;
+                private boolean returning = false;
+        
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (targetIndex >= path.size()) {
+                        if (!returning) {
+                            // Build clean reverse path
+                            List<Point> reversed = new ArrayList<>();
+                            for (int i = path.size() - 2; i >= 0; i--) { 
+                                reversed.add(path.get(i));
+                            }
+        
+                            path.clear();
+                            path.addAll(reversed);
+        
+                            targetIndex = 0;   
+                            returning = true;
+                            return;
+                        } else {
+                            moveTimer.stop();
+                            waitressMoving = false;
+                            return;
+                        }
+                    }
+        
+                    Point target = path.get(targetIndex);
+                    int currentX = waitress.getX();
+                    int currentY = waitress.getY();
+        
+                    double dx = target.x - currentX;
+                    double dy = target.y - currentY;
+                    double distance = Math.sqrt(dx * dx + dy * dy);
+        
+                    if (distance <= speed) {
+                        waitress.setPosition(target.x, target.y);
+                        targetIndex++;
+                    } else {
+                        double stepX = (dx / distance) * speed;
+                        double stepY = (dy / distance) * speed;
+                        waitress.setPosition((int) (currentX + stepX), (int) (currentY + stepY));
+                    }
+        
+                    repaint();
+                }
+            });
+            moveTimer.start();
+        }
+        
+        private List<Point> createPath(int startX, int startY, int targetX, int targetY) {
+            List<Point> path = new ArrayList<>();
+            int panelWidth = getWidth();
+
+            int leftSafeX = 50;
+            int rightSafeX = panelWidth - 50;
+
+            double leftDist = Math.abs(startX - leftSafeX)
+                    + Math.abs(startY - (targetY - table.getTableSize() / 2 - 20))
+                    + Math.abs(leftSafeX - targetX);
+
+            double rightDist = Math.abs(startX - rightSafeX)
+                    + Math.abs(startY - (targetY - table.getTableSize() / 2 - 20))
+                    + Math.abs(rightSafeX - targetX);
+
+            int safeX = (leftDist <= rightDist) ? leftSafeX : rightSafeX;
+
+            path.add(new Point(startX, startY));
+            path.add(new Point(safeX, startY));
+            path.add(new Point(safeX, targetY - table.getTableSize() / 2 - 20));
+            path.add(new Point(targetX, targetY - table.getTableSize() / 2 - 20));
+
+            return path;
+        }
+    }
+}
