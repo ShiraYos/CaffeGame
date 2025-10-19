@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -6,11 +7,10 @@ import java.util.ArrayList;
 
 public class Kitchen {
 
-    private Menu menu;
+    ArrayList<FoodItem> toPrepare;
 
     public Kitchen() {
-        menu = new Menu();
-
+        toPrepare = new ArrayList<FoodItem>();
     }
 
     public void drawKitchen(Graphics g, int gameWidth, int gameHeight) {
@@ -26,18 +26,25 @@ public class Kitchen {
         g.setColor(Color.BLACK);
         g.drawRect(panelX, panelY, panelWidth, panelHeight);
 
-        ArrayList<FoodItem> items = this.menu.getMenu();
         int spacing = 5;
 
-        for (FoodItem foodItem : items) {
-
+        for (FoodItem foodItem : toPrepare) {
             BufferedImage image = foodItem.getPhoto();
-            if (image != null) {
+            if (foodItem.isReady() && image != null) {
                 g.drawImage(image, panelX + spacing, panelY, 40, 40, null);
                 spacing += 40;
             }
         }
 
+    }
+
+    public void prepareDish(FoodItem item, CaffeGame game) {
+        Timer timer = new Timer(5000, e -> {
+            item.setIsReady(true);
+            game.repaint();
+        });
+        timer.setRepeats(false);
+        timer.start();
     }
 
 }

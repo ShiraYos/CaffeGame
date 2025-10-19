@@ -23,12 +23,17 @@ public class Menu {
     private void generateItems() {
 
         try {
-            menu.add(new FoodItem(new JLabel("Burger"), ImageIO.read(getClass().getResource("/pictures/burger.png"))));
-            menu.add(new FoodItem(new JLabel("Cake"), ImageIO.read(getClass().getResource("/pictures/cake.png"))));
-            menu.add(new FoodItem(new JLabel("Coffee"), ImageIO.read(getClass().getResource("/pictures/coffee.png"))));
-            menu.add(new FoodItem(new JLabel("IceCream"), ImageIO.read(getClass().getResource("/pictures/icecream.png"))));
-            menu.add(new FoodItem(new JLabel("Orange juice"), ImageIO.read(getClass().getResource("/pictures/orange.png"))));
-            
+            menu.add(new FoodItem(new JLabel("Burger"),
+                    ImageIO.read(getClass().getResource("/pictures/burger.png")), 1));
+            menu.add(new FoodItem(new JLabel("Cake"),
+                    ImageIO.read(getClass().getResource("/pictures/cake.png")), 2));
+            menu.add(new FoodItem(new JLabel("Coffee"),
+                     ImageIO.read(getClass().getResource("/pictures/coffee.png")), 3));
+            menu.add(new FoodItem(new JLabel("IceCream"),
+                    ImageIO.read(getClass().getResource("/pictures/icecream.png")), 4));
+            menu.add(new FoodItem(new JLabel("Orange juice"),
+                    ImageIO.read(getClass().getResource("/pictures/orange.png")), 5));
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -45,6 +50,14 @@ public class Menu {
 
     public ArrayList<FoodItem> getMenu() {
         return this.menu;
+    }
+
+    public void updateMenu(FoodItem item) {
+        for (FoodItem current : this.menu) {
+            if (current.getFoodID() == item.getFoodID()) {
+                current.setIsReady(item.isReady());
+            }
+        }
     }
 
 }

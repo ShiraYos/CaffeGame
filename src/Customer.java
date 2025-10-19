@@ -7,10 +7,12 @@ public class Customer extends Player {
 
     protected ProgressBar progressBar;
     protected boolean nextToTable;
+    protected boolean dishCooked;
 
     public Customer(int x, int y) {
         super(x, y);
         setPlayerImage();
+        this.dishCooked = false;
         this.nextToTable = false;
         progressBar = new ProgressBar();
     }
@@ -76,6 +78,11 @@ public class Customer extends Player {
 
             }
 
+            if (!dishCooked) {
+                dishCooked = true;
+                kitchen.prepareDish(this.dish, game);
+            }
+            
         }
     }
 }
