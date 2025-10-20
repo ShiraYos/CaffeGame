@@ -8,12 +8,15 @@ public class Customer extends Player {
     protected ProgressBar progressBar;
     protected boolean nextToTable;
     protected boolean dishCooked;
+    protected boolean wasServed;
 
     public Customer(int x, int y) {
         super(x, y);
+        this.dish = new FoodItem();
         setPlayerImage();
         this.dishCooked = false;
         this.nextToTable = false;
+        this.wasServed = false;
         progressBar = new ProgressBar();
     }
 

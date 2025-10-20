@@ -98,7 +98,31 @@ public class CaffeGame extends JPanel {
                     } else {
                         List<Point> waitressPath = createPath(waitress.getX(), waitress.getY(), pos[0], pos[1]);
                         startWaitressAnimation(waitressPath);
+                        
                     }
+                    break;
+                }
+            }
+
+            // check if food item is clicked
+            for (FoodItem dish : kitchen.toPrepare) {
+                int dishX = dish.getScreenX();
+                int dishY = dish.getScreenY();
+                int radius = Kitchen.DISHSIZE / 2;
+
+                double dx = clickedX - (dishX + radius);
+                double dy = clickedY - (dishY + radius);
+                double dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist <= radius) {
+                    if (waitress.getDish() == null) {
+                        kitchen.toPrepare.remove(dish);
+                    } else {
+                        kitchen.switchItems(dish, waitress.getDish());
+                    }
+
+                    waitress.setDish(dish);
+                    repaint();
                     break;
                 }
             }
@@ -158,26 +182,26 @@ public class CaffeGame extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (targetIndex >= path.size()) {
-                    if (!returning) {
-                        // Build clean reverse path
-                        List<Point> reversed = new ArrayList<>();
-                        for (int i = path.size() - 2; i >= 0; i--) {
-                            reversed.add(path.get(i));
-                        }
+                // if (targetIndex >= path.size()) {
+                //     if (!returning) {
+                //         // Build clean reverse path
+                //         List<Point> reversed = new ArrayList<>();
+                //         for (int i = path.size() - 2; i >= 0; i--) {
+                //             reversed.add(path.get(i));
+                //         }
 
-                        path.clear();
-                        path.addAll(reversed);
+                //         path.clear();
+                //         path.addAll(reversed);
 
-                        targetIndex = 0;
-                        returning = true;
-                        return;
-                    } else {
-                        moveTimer.stop();
-                        waitressMoving = false;
-                        return;
-                    }
-                }
+                //         targetIndex = 0;
+                //         returning = true;
+                //         return;
+                //     } else {
+                //         moveTimer.stop();
+                //         waitressMoving = false;
+                //         return;
+                //     }
+                // }
 
                 Point target = path.get(targetIndex);
                 int currentX = waitress.getX();

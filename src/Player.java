@@ -14,7 +14,6 @@ abstract class Player {
 
         this.playerX = x;
         this.playerY = y;
-        this.dish = new FoodItem();
     }
 
     public void setPosition(int x, int y) {

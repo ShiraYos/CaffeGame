@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public class Kitchen {
 
     ArrayList<FoodItem> toPrepare;
+    public static int DISHSIZE = 40;
 
     public Kitchen() {
         toPrepare = new ArrayList<FoodItem>();
@@ -31,8 +32,16 @@ public class Kitchen {
         for (FoodItem foodItem : toPrepare) {
             BufferedImage image = foodItem.getPhoto();
             if (foodItem.isReady() && image != null) {
-                g.drawImage(image, panelX + spacing, panelY, 40, 40, null);
-                spacing += 40;
+
+                int drawX = panelX + spacing;
+                int drawY = panelY;
+
+                // Store the items position (so we can detect clicks later)
+                foodItem.setScreenPosition(drawX, drawY);
+
+                g.drawImage(image, drawX, drawY, DISHSIZE, DISHSIZE, null);
+                spacing += DISHSIZE + 10;
+
             }
         }
 
@@ -45,6 +54,11 @@ public class Kitchen {
         });
         timer.setRepeats(false);
         timer.start();
+    }
+
+    public void switchItems(FoodItem clicked, FoodItem toSwitch) {
+        this.toPrepare.remove(clicked);
+        this.toPrepare.add(toSwitch);
     }
 
 }

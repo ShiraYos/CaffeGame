@@ -11,6 +11,10 @@ public class FoodItem {
     protected BufferedImage dishPicture;
     protected int foodID;
     protected boolean isReady = false;
+    protected boolean isClicked = false;
+
+    private int screenX;
+    private int screenY;
 
     public FoodItem(JLabel name, BufferedImage pic, int id) {
         this.dishName = name;
@@ -27,10 +31,22 @@ public class FoodItem {
     public FoodItem() {
         Menu menu = new Menu();
         FoodItem item = menu.randomFoodItem();
-
         this.dishName = item.dishName;
         this.dishPicture = item.dishPicture;
         this.foodID = item.foodID;
+    }
+
+    public void setScreenPosition(int x, int y) {
+        this.screenX = x;
+        this.screenY = y;
+    }
+
+    public int getScreenX() {
+        return screenX;
+    }
+
+    public int getScreenY() {
+        return screenY;
     }
 
     public JLabel getName() {
@@ -47,6 +63,10 @@ public class FoodItem {
 
     public void setIsReady(boolean ready) {
         this.isReady = ready;
+    }
+
+    public void setIsClicked(boolean clicked) {
+        this.isClicked = clicked;
     }
 
     public BufferedImage getPhoto() {
