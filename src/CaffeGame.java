@@ -98,7 +98,18 @@ public class CaffeGame extends JPanel {
                     } else {
                         List<Point> waitressPath = createPath(waitress.getX(), waitress.getY(), pos[0], pos[1]);
                         startWaitressAnimation(waitressPath);
-                        
+
+                        // for (Customer c : customers) {
+                        // dist = Math.sqrt(Math.pow(c.getX() - waitress.getX(),2) + Math.pow(c.getY() -
+                        // waitress.getY(), 2));
+                        // if (dist < 50) {
+                        // if (c.getDish().getFoodID() == waitress.getDish().getFoodID()) {
+                        // waitress.setDish(null);
+                        // c.setDish(null);
+                        // repaint();
+                        // }
+                        // }
+                        // }
                     }
                     break;
                 }
@@ -140,8 +151,11 @@ public class CaffeGame extends JPanel {
                 if (targetIndex >= path.size()) {
                     moveTimer.stop();
                     customer.nextToTable = true;
-                    kitchen.toPrepare.add(customer.getDish());
-                    customer.progressBar.startProgressBar();
+                    if (customer.getDish() != null) {
+                        kitchen.toPrepare.add(customer.getDish());
+                        customer.progressBar.startProgressBar();
+                    }
+                    
                     return;
                 }
 
@@ -182,26 +196,42 @@ public class CaffeGame extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                // if (targetIndex >= path.size()) {
-                //     if (!returning) {
-                //         // Build clean reverse path
-                //         List<Point> reversed = new ArrayList<>();
-                //         for (int i = path.size() - 2; i >= 0; i--) {
-                //             reversed.add(path.get(i));
-                //         }
 
-                //         path.clear();
-                //         path.addAll(reversed);
+                if (targetIndex >= path.size()) {
 
-                //         targetIndex = 0;
-                //         returning = true;
-                //         return;
-                //     } else {
-                //         moveTimer.stop();
-                //         waitressMoving = false;
-                //         return;
-                //     }
-                // }
+                    for (Customer c : customers) {
+                        double dist = Math.sqrt(Math.pow(c.getX() - waitress.getX(), 2)
+                                + Math.pow(c.getY() - waitress.getY(), 2));
+
+                        if (dist < 50 && waitress.getDish() != null) {
+                            if (c.getDish() != null &&
+                                c.getDish().getFoodID() == waitress.getDish().getFoodID() && !c.progressBar.isTimeUp()) {
+                                waitress.setDish(null);
+                                c.setDish(null);
+                                
+                                repaint();
+                            }
+                        }
+                    }
+                    if (!returning) {
+                        // Build clean reverse path
+                        List<Point> reversed = new ArrayList<>();
+                        for (int i = path.size() - 2; i >= 0; i--) {
+                            reversed.add(path.get(i));
+                        }
+
+                        path.clear();
+                        path.addAll(reversed);
+
+                        targetIndex = 0;
+                        returning = true;
+                        return;
+                    } else {
+                        moveTimer.stop();
+                        waitressMoving = false;
+                        return;
+                    }
+                }
 
                 Point target = path.get(targetIndex);
                 int currentX = waitress.getX();
@@ -221,6 +251,7 @@ public class CaffeGame extends JPanel {
                 }
 
                 repaint();
+
             }
         });
         moveTimer.start();

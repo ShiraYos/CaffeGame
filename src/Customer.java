@@ -15,7 +15,7 @@ public class Customer extends Player {
         this.dish = new FoodItem();
         setPlayerImage();
         this.dishCooked = false;
-        this.nextToTable = false;
+        this.nextToTable = false;;
         this.wasServed = false;
         progressBar = new ProgressBar();
     }
@@ -58,8 +58,52 @@ public class Customer extends Player {
     }
 
     void drawBubble(Graphics g, Kitchen kitchen, CaffeGame game) {
-        if (isNextToTable() && dish != null && dish.getPhoto() != null) {
-            BufferedImage img = dish.getPhoto();
+
+        if (isNextToTable()) {
+            BufferedImage img = null;
+            JPanel barPanel = this.progressBar.getPanel();
+
+            if (dish != null && dish.getPhoto() != null) {
+                img = dish.getPhoto();
+
+                // Add progress bar
+
+                if (this.progressBar != null) {
+                    game.add(barPanel);
+                    barPanel.setBounds(
+                            this.getX() + 10,
+                            this.getY(),
+                            10, 50);
+
+                }
+
+                if (!dishCooked) {
+                    dishCooked = true;
+                    kitchen.prepareDish(this.dish, game);
+                }
+
+            }
+
+            if (!this.progressBar.isTimeUp() && this.dish == null) {
+                try {
+                    game.remove(barPanel);
+                    this.wasServed = true;
+                    this.progressBar.stopProgressBar();
+                    img = ImageIO.read(getClass().getResource("/pictures/grin.png"));
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else if (this.progressBar.isTimeUp() && !wasServed) {
+                try {
+                    game.remove(barPanel);
+                    this.dish = null;
+                    img = ImageIO.read(getClass().getResource("/pictures/rage.png"));
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
 
             g.setColor(Color.white);
             g.fillOval(playerX + 65, playerY - 30, 44, 44);
@@ -68,24 +112,7 @@ public class Customer extends Player {
             g.fillRect(playerX + 67, playerY, 20, 10);
             g.drawOval(playerX + 67, playerY, 20, 10);
             g.drawImage(img, playerX + 66, playerY - 28, 40, 40, null);
-
-            // Add progress bar
-
-            if (this.progressBar != null) {
-                JPanel barPanel = this.progressBar.getPanel();
-                game.add(barPanel);
-                barPanel.setBounds(
-                        this.getX() + 10,
-                        this.getY(),
-                        10, 50);
-
-            }
-
-            if (!dishCooked) {
-                dishCooked = true;
-                kitchen.prepareDish(this.dish, game);
-            }
-            
         }
+
     }
 }

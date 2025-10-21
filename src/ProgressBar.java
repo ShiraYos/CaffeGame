@@ -8,6 +8,7 @@ public class ProgressBar {
     private int delay = 200;
     private Timer timer;
     private int counter = 100;
+    private boolean timeUp;
 
     public ProgressBar() {
         bar.setValue(100);
@@ -15,6 +16,7 @@ public class ProgressBar {
         bar.setMinimum(0);
         bar.setMaximum(100);
         bar.setBounds(0, 0, 10, 50);
+        this.timeUp = false;
 
         panel.setLayout(null);
         panel.setOpaque(false);
@@ -35,6 +37,7 @@ public class ProgressBar {
             counter--;
             bar.setValue(counter);
             if (counter <= 0) {
+                this.timeUp = true;
                 ((Timer) e.getSource()).stop();
             }
         });
@@ -57,6 +60,14 @@ public class ProgressBar {
     public void resetCounter() {
         this.counter = 100;
         bar.setValue(100);
+    }
+
+    public void stopProgressBar() {
+        this. timer.stop();
+    }
+
+    public boolean isTimeUp() {
+        return this.timeUp;
     }
 
 }
