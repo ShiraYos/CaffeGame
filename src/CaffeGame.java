@@ -99,17 +99,6 @@ public class CaffeGame extends JPanel {
                         List<Point> waitressPath = createPath(waitress.getX(), waitress.getY(), pos[0], pos[1]);
                         startWaitressAnimation(waitressPath);
 
-                        // for (Customer c : customers) {
-                        // dist = Math.sqrt(Math.pow(c.getX() - waitress.getX(),2) + Math.pow(c.getY() -
-                        // waitress.getY(), 2));
-                        // if (dist < 50) {
-                        // if (c.getDish().getFoodID() == waitress.getDish().getFoodID()) {
-                        // waitress.setDish(null);
-                        // c.setDish(null);
-                        // repaint();
-                        // }
-                        // }
-                        // }
                     }
                     break;
                 }
