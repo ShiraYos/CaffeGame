@@ -5,7 +5,7 @@ public class ProgressBar {
 
     private JPanel panel = new JPanel(null);
     private JProgressBar bar = new JProgressBar(SwingConstants.VERTICAL);
-    private int delay = 200;
+    private int delay;
     private Timer timer;
     private int counter = 100;
     private boolean timeUp;
@@ -17,6 +17,7 @@ public class ProgressBar {
         bar.setMaximum(100);
         bar.setBounds(0, 0, 10, 50);
         this.timeUp = false;
+        this.delay = 400;
 
         panel.setLayout(null);
         panel.setOpaque(false);
@@ -26,7 +27,7 @@ public class ProgressBar {
     }
 
     public void startProgressBar() {
-        
+
         counter = 100;
 
         if (timer != null && timer.isRunning()) {
@@ -63,7 +64,7 @@ public class ProgressBar {
     }
 
     public void stopProgressBar() {
-        this. timer.stop();
+        this.timer.stop();
     }
 
     public boolean isTimeUp() {

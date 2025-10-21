@@ -21,8 +21,8 @@ public class CaffeGame extends JPanel {
 
     Customer selectedCustomer = null;
     List<Customer> customers = new ArrayList<>();
-    private int spawnX = boardWidth - 120;              
-    private int[] possibleY = {100, 200, 300};
+    private int spawnX = boardWidth - 120;
+    private int[] possibleY = { 100, 200, 300 };
 
     List<Point> path = new ArrayList<>();
     Timer timer;
@@ -42,7 +42,7 @@ public class CaffeGame extends JPanel {
         waitress = new Waitress(50, 500);
         kitchen = new Kitchen();
 
-        Customer.startSpawner(customers, spawnX, possibleY, this);      
+        Customer.startSpawner(customers, spawnX, possibleY, this);
     }
 
     @Override
@@ -61,6 +61,7 @@ public class CaffeGame extends JPanel {
             c.drawBubble(g2, kitchen, this);
         }
 
+        customers.removeIf(c -> !c.isVisible());
     }
 
     private class MouseHandler extends MouseAdapter {
@@ -72,7 +73,7 @@ public class CaffeGame extends JPanel {
 
             // check if customer is clicked
             for (Customer c : customers) {
-                Rectangle rect = new Rectangle(c.getX(), c.getY(), 70, 70);
+                Rectangle rect = new Rectangle(c.getX(), c.getY(), 100, 100);
                 if (rect.contains(clickedX, clickedY)) {
                     selectedCustomer = c;
                     customerSelected = true;
@@ -83,16 +84,21 @@ public class CaffeGame extends JPanel {
             // check if table is clicked
             for (int[] pos : table.getTablePositions()) {
                 int radius = table.getTableSize() / 2;
-                double dist = Math.sqrt(Math.pow(clickedX - pos[0], 2) + Math.pow(clickedY - pos[1], 2));
+                double dist = Math.sqrt(Math.pow(clickedX - pos[0], 2) 
+                    + Math.pow(clickedY - pos[1], 2));
                 if (dist <= radius) {
-                    if (customerSelected && selectedCustomer != null) {
-                        List<Point> customerPath = createPath(selectedCustomer.getX(), selectedCustomer.getY(), pos[0],
+                    if (customerSelected && selectedCustomer != null 
+                        && !selectedCustomer.isNextToTable() 
+                        && !table.isTableOccupied(customers, getMousePosition())) {
+                        List<Point> customerPath = createPath(selectedCustomer.getX(),
+                             selectedCustomer.getY(), pos[0],
                                 pos[1]);
                         startCustomerAnimation(selectedCustomer, customerPath);
                         selectedCustomer = null;
                         customerSelected = false;
                     } else {
-                        List<Point> waitressPath = createPath(waitress.getX(), waitress.getY(), pos[0], pos[1]);
+                        List<Point> waitressPath = createPath(waitress.getX(),
+                             waitress.getY(), pos[0], pos[1]);
                         startWaitressAnimation(waitressPath);
 
                     }
@@ -140,7 +146,7 @@ public class CaffeGame extends JPanel {
                         kitchen.toPrepare.add(customer.getDish());
                         customer.progressBar.startProgressBar();
                     }
-                    
+
                     return;
                 }
 
@@ -189,11 +195,12 @@ public class CaffeGame extends JPanel {
                                 + Math.pow(c.getY() - waitress.getY(), 2));
 
                         if (dist < 50 && waitress.getDish() != null) {
-                            if (c.getDish() != null &&
-                                c.getDish().getFoodID() == waitress.getDish().getFoodID() && !c.progressBar.isTimeUp()) {
+                            if (c.getDish() != null 
+                                    && c.getDish().getFoodID() == waitress.getDish().getFoodID()
+                                    && !c.progressBar.isTimeUp()) {
                                 waitress.setDish(null);
                                 c.setDish(null);
-                                
+
                                 repaint();
                             }
                         }
