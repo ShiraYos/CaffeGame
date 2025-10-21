@@ -21,6 +21,8 @@ public class CaffeGame extends JPanel {
 
     Customer selectedCustomer = null;
     List<Customer> customers = new ArrayList<>();
+    private int spawnX = boardWidth - 120;              
+    private int[] possibleY = {100, 200, 300};
 
     List<Point> path = new ArrayList<>();
     Timer timer;
@@ -40,10 +42,7 @@ public class CaffeGame extends JPanel {
         waitress = new Waitress(50, 500);
         kitchen = new Kitchen();
 
-        int startX = boardWidth - 120;
-        for (int i = 0; i < 3; i++) {
-            customers.add(new Customer(startX, 150 + i * 100));
-        }
+        Customer.startSpawner(customers, spawnX, possibleY, this);      
     }
 
     @Override
@@ -67,9 +66,6 @@ public class CaffeGame extends JPanel {
     private class MouseHandler extends MouseAdapter {
         @Override
         public void mouseClicked(MouseEvent e) {
-
-            if (waitressMoving && !customerSelected)
-                return;
 
             int clickedX = e.getX();
             int clickedY = e.getY();
