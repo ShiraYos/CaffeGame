@@ -7,17 +7,25 @@ public class Waitress extends Player {
     public Waitress(int startX, int startY) {
 
         super(startX, startY);
+        this.dish = null;
         setPlayerImage();
-
     }
 
     @Override
     void drawPlayer(Graphics g) {
         if (this.getPlayerImage() != null) {
-            g.drawImage(this.getPlayerImage(), this.getX() - this.getPlayerImage().getWidth()/2, this.getY() - this.getPlayerImage().getHeight()/2, null);
+
+            int drawX = this.getX() - this.getPlayerImage().getWidth() / 2;
+            int drawY = this.getY() - this.getPlayerImage().getHeight() / 2;
+            g.drawImage(this.getPlayerImage(), drawX, drawY, null);
+
+            if (this.dish != null && this.dish.getPhoto() != null) {
+                g.drawImage(this.dish.getPhoto(), drawX + 65, drawY + 22, null);
+            }
+
         } else {
             g.setColor(Color.RED);
-            g.fillOval(this.getX() - 10, this.getY() - 10, 20, 20);
+            g.fillOval(this.getX(), this.getY(), 20, 20);
         }
     }
 
@@ -35,8 +43,8 @@ public class Waitress extends Player {
 
         } catch (Exception e) {
             e.printStackTrace();
-            this.playerImage = null; // fallback to circle
+            this.playerImage = null;
         }
     }
-    
+
 }

@@ -1,11 +1,8 @@
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-
 import javax.imageio.ImageIO;
-import javax.swing.JButton;
 
 public class Table {
     private final int tableSize = 70;
@@ -41,13 +38,13 @@ public class Table {
         }
     }
 
+
     public void drawTables(Graphics g) {
         for (int i = 0; i < tablePositions.length; i++) {
             int x = tablePositions[i][0] - tableSize / 2;
             int y = tablePositions[i][1] - tableSize / 2;
 
             if (tableImage != null) {
-
                 g.drawImage(tableImage, x, y, tableSize, tableSize, null);
             } else {
                 // Fallback if image not found
@@ -71,4 +68,5 @@ public class Table {
     public int getTableSize() {
         return tableSize;
     }
+
 }

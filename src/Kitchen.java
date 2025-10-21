@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -6,11 +7,11 @@ import java.util.ArrayList;
 
 public class Kitchen {
 
-    private Menu menu;
+    ArrayList<FoodItem> toPrepare;
+    public static int DISHSIZE = 40;
 
     public Kitchen() {
-        menu = new Menu();
-
+        toPrepare = new ArrayList<FoodItem>();
     }
 
     public void drawKitchen(Graphics g, int gameWidth, int gameHeight) {
@@ -26,18 +27,38 @@ public class Kitchen {
         g.setColor(Color.BLACK);
         g.drawRect(panelX, panelY, panelWidth, panelHeight);
 
-        ArrayList<FoodItem> items = this.menu.getMenu();
         int spacing = 5;
 
-        for (FoodItem foodItem : items) {
-
+        for (FoodItem foodItem : toPrepare) {
             BufferedImage image = foodItem.getPhoto();
-            if (image != null) {
-                g.drawImage(image, panelX + spacing, panelY, 40, 40, null);
-                spacing += 40;
+            if (foodItem.isReady() && image != null) {
+
+                int drawX = panelX + spacing;
+                int drawY = panelY;
+
+                // Store the items position (so we can detect clicks later)
+                foodItem.setScreenPosition(drawX, drawY);
+
+                g.drawImage(image, drawX, drawY, DISHSIZE, DISHSIZE, null);
+                spacing += DISHSIZE + 10;
+
             }
         }
 
+    }
+
+    public void prepareDish(FoodItem item, CaffeGame game) {
+        Timer timer = new Timer(5000, e -> {
+            item.setIsReady(true);
+            game.repaint();
+        });
+        timer.setRepeats(false);
+        timer.start();
+    }
+
+    public void switchItems(FoodItem clicked, FoodItem toSwitch) {
+        this.toPrepare.remove(clicked);
+        this.toPrepare.add(toSwitch);
     }
 
 }

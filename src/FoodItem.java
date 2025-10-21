@@ -9,32 +9,68 @@ public class FoodItem {
 
     protected JLabel dishName;
     protected BufferedImage dishPicture;
+    protected int foodID;
+    protected boolean isReady = false;
+    protected boolean isClicked = false;
 
-    public FoodItem(JLabel name, BufferedImage pic) {
+    private int screenX;
+    private int screenY;
+
+    public FoodItem(JLabel name, BufferedImage pic, int id) {
         this.dishName = name;
         this.dishPicture = pic;
+        this.foodID = id;
     }
 
     public FoodItem(FoodItem item) {
         this.dishName = item.getName();
         this.dishPicture = item.getPhoto();
+        this.foodID = item.foodID;
     }
 
-    public FoodItem(){
+    public FoodItem() {
         Menu menu = new Menu();
         FoodItem item = menu.randomFoodItem();
+        this.dishName = item.dishName;
+        this.dishPicture = item.dishPicture;
+        this.foodID = item.foodID;
+    }
 
-        this.dishName = item.getName();
-        this.dishPicture = item.getPhoto();
+    public void setScreenPosition(int x, int y) {
+        this.screenX = x;
+        this.screenY = y;
+    }
+
+    public int getScreenX() {
+        return screenX;
+    }
+
+    public int getScreenY() {
+        return screenY;
     }
 
     public JLabel getName() {
         return this.dishName;
     }
 
+    public int getFoodID() {
+        return this.foodID;
+    }
+
+    public boolean isReady() {
+        return this.isReady;
+    }
+
+    public void setIsReady(boolean ready) {
+        this.isReady = ready;
+    }
+
+    public void setIsClicked(boolean clicked) {
+        this.isClicked = clicked;
+    }
+
     public BufferedImage getPhoto() {
         return this.dishPicture;
     }
 
-    
 }
