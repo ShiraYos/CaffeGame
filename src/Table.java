@@ -2,7 +2,9 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import javax.imageio.ImageIO;
+
 
 public class Table {
     private final int tableSize = 70;
@@ -38,7 +40,6 @@ public class Table {
         }
     }
 
-
     public void drawTables(Graphics g) {
         for (int i = 0; i < tablePositions.length; i++) {
             int x = tablePositions[i][0] - tableSize / 2;
@@ -60,13 +61,24 @@ public class Table {
         }
     }
 
-    
     public int[][] getTablePositions() {
         return tablePositions;
     }
 
     public int getTableSize() {
         return tableSize;
+    }
+
+    public boolean isTableOccupied(List<Customer> customers, Point p) {
+        for (Customer customer : customers) {
+            double distance = Math.sqrt(Math.pow(p.getX() - customer.getX(), 2)
+                    + Math.pow(p.getY() - customer.getY(), 2));
+
+            if (distance <= 50) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
