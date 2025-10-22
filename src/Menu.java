@@ -24,15 +24,15 @@ public class Menu {
 
         try {
             menu.add(new FoodItem(new JLabel("Burger"),
-                    ImageIO.read(getClass().getResource("/pictures/burger.png")), 1));
+                    ImageIO.read(getClass().getResource("/pictures/burger.png")), 1, false));
             menu.add(new FoodItem(new JLabel("Cake"),
-                    ImageIO.read(getClass().getResource("/pictures/cake.png")), 2));
+                    ImageIO.read(getClass().getResource("/pictures/cake.png")), 2, false));
             menu.add(new FoodItem(new JLabel("Coffee"),
-                     ImageIO.read(getClass().getResource("/pictures/coffee.png")), 3));
+                     ImageIO.read(getClass().getResource("/pictures/coffee.png")), 3, true));
             menu.add(new FoodItem(new JLabel("IceCream"),
-                    ImageIO.read(getClass().getResource("/pictures/icecream.png")), 4));
+                    ImageIO.read(getClass().getResource("/pictures/icecream.png")), 4, true));
             menu.add(new FoodItem(new JLabel("Orange juice"),
-                    ImageIO.read(getClass().getResource("/pictures/orange.png")), 5));
+                    ImageIO.read(getClass().getResource("/pictures/orange.png")), 5, true));
 
         } catch (Exception e) {
             e.printStackTrace();

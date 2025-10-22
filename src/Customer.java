@@ -17,9 +17,9 @@ public class Customer extends Player {
     private static Timer customerSpawnTimer;
     private static Random random = new Random();
 
-    public Customer(int x, int y) {
+    public Customer(int x, int y, Menu menu) {
         super(x, y);
-        this.dish = new FoodItem();
+        this.dish = new FoodItem(menu);
         setPlayerImage();
         this.startTimeToLeave = false;
         this.dishCooked = false;
@@ -138,7 +138,7 @@ public class Customer extends Player {
 
     }
 
-    public static void startSpawner(List<Customer> customers, int spawnX, int[] possibleY, JPanel panel) {
+    public static void startSpawner(List<Customer> customers, int spawnX, int[] possibleY, JPanel panel, Menu m) {
         if (customerSpawnTimer != null && customerSpawnTimer.isRunning()) {
             return;
         }
@@ -147,7 +147,7 @@ public class Customer extends Player {
         customerSpawnTimer.addActionListener(e -> {
 
             int y = possibleY[random.nextInt(possibleY.length)];
-            Customer newCustomer = new Customer(spawnX, y);
+            Customer newCustomer = new Customer(spawnX, y, m);
             customers.add(newCustomer);
             panel.repaint();
 

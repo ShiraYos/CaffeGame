@@ -18,6 +18,7 @@ public class CaffeGame extends JPanel {
     Waitress waitress;
     Kitchen kitchen;
     TileManager tileManager;
+    Menu menu;
 
     Customer selectedCustomer = null;
     List<Customer> customers = new ArrayList<>();
@@ -38,11 +39,12 @@ public class CaffeGame extends JPanel {
         timer = new Timer(16, e -> repaint());
         timer.start();
 
+        menu = new Menu();
         table = new Table();
         waitress = new Waitress(50, 500);
         kitchen = new Kitchen();
 
-        Customer.startSpawner(customers, spawnX, possibleY, this);
+        Customer.startSpawner(customers, spawnX, possibleY, this, menu);
     }
 
     @Override

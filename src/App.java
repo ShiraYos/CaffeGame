@@ -11,6 +11,10 @@ public class App {
         frame.setLayout(new BorderLayout());
 
         CaffeGame game = new CaffeGame();
+        
+        Menu m = new Menu();
+        MemoryGame mg = new MemoryGame(frame, game.menu.getMenu());
+
         frame.add(game, BorderLayout.CENTER);
         frame.pack();
         frame.setLocationRelativeTo(null);
