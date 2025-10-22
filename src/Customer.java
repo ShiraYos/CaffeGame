@@ -1,9 +1,9 @@
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.util.List;
 import java.util.Random;
+import javax.swing.*;
 
 public class Customer extends Player {
 
@@ -17,18 +17,21 @@ public class Customer extends Player {
     private static Timer customerSpawnTimer;
     private static Random random = new Random();
 
-    public Customer(int x, int y, Menu menu) {
+    ScoreSystem scoreSystem;
+    private boolean scoreGiven = false;
+
+    public Customer(int x, int y, Menu menu, ScoreSystem scoreSystem) {
         super(x, y);
         this.dish = new FoodItem(menu);
         setPlayerImage();
         this.startTimeToLeave = false;
         this.dishCooked = false;
         this.nextToTable = false;
-
         this.wasServed = false;
         timeToLeave = new ProgressBar();
         progressBar = new ProgressBar();
         this.timeToLeave.setDelay(50);
+        this.scoreSystem = scoreSystem;
     }
 
     @Override
@@ -75,13 +78,11 @@ public class Customer extends Player {
 
                 // Add progress bar
 
-                if (this.progressBar != null) {
-                    game.add(barPanel);
-                    barPanel.setBounds(
-                            this.getX() + 10,
-                            this.getY(),
-                            10, 50);
-
+                if (this.progressBar != null && game != null) {
+                    if (barPanel.getParent() != game) {
+                        game.add(barPanel); // only add once
+                    }
+                    barPanel.setBounds(this.getX() + 10, this.getY(), 10, 50);
                 }
 
                 if (!dishCooked) {
@@ -95,6 +96,10 @@ public class Customer extends Player {
                 try {
                     game.remove(barPanel);
                     this.wasServed = true;
+                    if (wasServed && !scoreGiven) {
+                        scoreSystem.addScore(20);
+                        scoreGiven = true;
+                    }
                     this.progressBar.stopProgressBar();
                     img = ImageIO.read(getClass().getResource("/pictures/grin.png"));
                     if (!startTimeToLeave) {
@@ -138,7 +143,8 @@ public class Customer extends Player {
 
     }
 
-    public static void startSpawner(List<Customer> customers, int spawnX, int[] possibleY, JPanel panel, Menu m) {
+    public static void startSpawner(List<Customer> customers, int spawnX, int[] possibleY, JPanel panel,
+            ScoreSystem scoreSystem, Menu m) {
         if (customerSpawnTimer != null && customerSpawnTimer.isRunning()) {
             return;
         }
@@ -147,7 +153,7 @@ public class Customer extends Player {
         customerSpawnTimer.addActionListener(e -> {
 
             int y = possibleY[random.nextInt(possibleY.length)];
-            Customer newCustomer = new Customer(spawnX, y, m);
+            Customer newCustomer = new Customer(spawnX, y, m, scoreSystem);
             customers.add(newCustomer);
             panel.repaint();
 
