@@ -12,14 +12,16 @@ public class FoodItem {
     protected int foodID;
     protected boolean isReady = false;
     protected boolean isClicked = false;
+    protected boolean unlocked;
 
     private int screenX;
     private int screenY;
 
-    public FoodItem(JLabel name, BufferedImage pic, int id) {
+    public FoodItem(JLabel name, BufferedImage pic, int id, boolean unlock) {
         this.dishName = name;
         this.dishPicture = pic;
         this.foodID = id;
+        this.unlocked = unlock;
     }
 
     public FoodItem(FoodItem item) {
@@ -28,9 +30,8 @@ public class FoodItem {
         this.foodID = item.foodID;
     }
 
-    public FoodItem() {
-        Menu menu = new Menu();
-        FoodItem item = menu.randomFoodItem();
+    public FoodItem(Menu m) {
+        FoodItem item = m.randomFoodItem();
         this.dishName = item.dishName;
         this.dishPicture = item.dishPicture;
         this.foodID = item.foodID;
@@ -71,6 +72,14 @@ public class FoodItem {
 
     public BufferedImage getPhoto() {
         return this.dishPicture;
+    }
+
+    public boolean isUnlocked() {
+        return this.unlocked;
+    }
+
+    public void setUnlocked(boolean lock) {
+        this.unlocked = lock;
     }
 
 }
