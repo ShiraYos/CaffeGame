@@ -29,6 +29,17 @@ public class CaffeGame extends JPanel {
     boolean waitressMoving = false;
     boolean customerSelected = false;
 
+    private Timer waitressMoveTimer;
+private List<Point> currentWaitressPath;
+private int waitressTargetIndex;
+private boolean waitressReturning;
+private final double WAITRESS_SPEED = 2.0;
+
+ScoreSystem scoreSystem = new ScoreSystem();
+
+
+
+
     public CaffeGame() {
         setPreferredSize(new Dimension(boardWidth, boardHeight));
         tileManager = new TileManager(this);
@@ -42,7 +53,10 @@ public class CaffeGame extends JPanel {
         waitress = new Waitress(50, 500);
         kitchen = new Kitchen();
 
-        Customer.startSpawner(customers, spawnX, possibleY, this);
+        Customer.startSpawner(customers, spawnX, possibleY, this, scoreSystem); 
+  
+    
+
     }
 
     @Override
@@ -62,6 +76,7 @@ public class CaffeGame extends JPanel {
         }
 
         customers.removeIf(c -> !c.isVisible());
+        scoreSystem.draw(g, getWidth());
     }
 
     private class MouseHandler extends MouseAdapter {
@@ -72,14 +87,18 @@ public class CaffeGame extends JPanel {
             int clickedY = e.getY();
 
             // check if customer is clicked
-            for (Customer c : customers) {
-                Rectangle rect = new Rectangle(c.getX(), c.getY(), 100, 100);
-                if (rect.contains(clickedX, clickedY)) {
-                    selectedCustomer = c;
-                    customerSelected = true;
-                    return;
-                }
-            }
+for (Customer c : customers) {
+    Rectangle rect = new Rectangle(c.getX(), c.getY(), 100, 100);
+    if (rect.contains(clickedX, clickedY)) {
+        // ignore if customer already seated
+        if (!c.isSeated()) {
+            selectedCustomer = c;
+            customerSelected = true;
+        }
+        return;
+    }
+}
+
 
             // check if table is clicked
             for (int[] pos : table.getTablePositions()) {
@@ -142,6 +161,8 @@ public class CaffeGame extends JPanel {
                 if (targetIndex >= path.size()) {
                     moveTimer.stop();
                     customer.nextToTable = true;
+                    customer.setSeated(true); // lock customer once seated
+                
                     if (customer.getDish() != null) {
                         kitchen.toPrepare.add(customer.getDish());
                         customer.progressBar.startProgressBar();
@@ -149,6 +170,7 @@ public class CaffeGame extends JPanel {
 
                     return;
                 }
+                
 
                 Point target = path.get(targetIndex);
                 int currentX = customer.getX();
@@ -173,81 +195,86 @@ public class CaffeGame extends JPanel {
         moveTimer.start();
     }
 
-    private void startWaitressAnimation(List<Point> originalPath) {
+    private void startWaitressAnimation(List<Point> path) {
+        // stop any existing timer to prevent overlaps
+        if (waitressMoveTimer != null && waitressMoveTimer.isRunning()) {
+            waitressMoveTimer.stop();
+        }
+    
+        // clone path to avoid reference issues
+        currentWaitressPath = new ArrayList<>(path);
+        waitressTargetIndex = 1;
+        waitressReturning = false;
         waitressMoving = true;
-
-        // Make a copy of the original path so we don't mutate it
-        List<Point> path = new ArrayList<>(originalPath);
-
-        Timer moveTimer = new Timer(10, null);
-        moveTimer.addActionListener(new ActionListener() {
-            private int targetIndex = 1;
-            private final double speed = 2.0;
-            private boolean returning = false;
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                if (targetIndex >= path.size()) {
-
-                    for (Customer c : customers) {
-                        double dist = Math.sqrt(Math.pow(c.getX() - waitress.getX(), 2)
-                                + Math.pow(c.getY() - waitress.getY(), 2));
-
-                        if (dist < 50 && waitress.getDish() != null) {
-                            if (c.getDish() != null 
-                                    && c.getDish().getFoodID() == waitress.getDish().getFoodID()
-                                    && !c.progressBar.isTimeUp()) {
-                                waitress.setDish(null);
-                                c.setDish(null);
-
-                                repaint();
-                            }
-                        }
-                    }
-                    if (!returning) {
-                        // Build clean reverse path
-                        List<Point> reversed = new ArrayList<>();
-                        for (int i = path.size() - 2; i >= 0; i--) {
-                            reversed.add(path.get(i));
-                        }
-
-                        path.clear();
-                        path.addAll(reversed);
-
-                        targetIndex = 0;
-                        returning = true;
-                        return;
-                    } else {
-                        moveTimer.stop();
-                        waitressMoving = false;
-                        return;
-                    }
-                }
-
-                Point target = path.get(targetIndex);
-                int currentX = waitress.getX();
-                int currentY = waitress.getY();
-
-                double dx = target.x - currentX;
-                double dy = target.y - currentY;
-                double distance = Math.sqrt(dx * dx + dy * dy);
-
-                if (distance <= speed) {
-                    waitress.setPosition(target.x, target.y);
-                    targetIndex++;
-                } else {
-                    double stepX = (dx / distance) * speed;
-                    double stepY = (dy / distance) * speed;
-                    waitress.setPosition((int) (currentX + stepX), (int) (currentY + stepY));
-                }
-
-                repaint();
-
+    
+        waitressMoveTimer = new Timer(10, e -> {
+            if (currentWaitressPath == null || waitressTargetIndex >= currentWaitressPath.size()) {
+                handleWaitressReachedTarget();
+                return;
             }
+    
+            moveWaitressStep();
         });
-        moveTimer.start();
+    
+        waitressMoveTimer.start();
     }
+
+private void moveWaitressStep() {
+    if (currentWaitressPath == null || waitressTargetIndex >= currentWaitressPath.size()) return;
+
+    Point target = currentWaitressPath.get(waitressTargetIndex);
+    int currentX = waitress.getX();
+    int currentY = waitress.getY();
+
+    double dx = target.x - currentX;
+    double dy = target.y - currentY;
+    double distance = Math.sqrt(dx * dx + dy * dy);
+
+    if (distance <= WAITRESS_SPEED) {
+        waitress.setPosition(target.x, target.y);
+        waitressTargetIndex++;
+    } else {
+        double stepX = (dx / distance) * WAITRESS_SPEED;
+        double stepY = (dy / distance) * WAITRESS_SPEED;
+        waitress.setPosition((int) (currentX + stepX), (int) (currentY + stepY));
+    }
+
+    repaint();
+}
+
+private void handleWaitressReachedTarget() {
+    for (Customer c : customers) {
+        double dist = Math.sqrt(Math.pow(c.getX() - waitress.getX(), 2)
+                + Math.pow(c.getY() - waitress.getY(), 2));
+
+        if (dist < 50 && waitress.getDish() != null) {
+            if (c.getDish() != null &&
+                c.getDish().getFoodID() == waitress.getDish().getFoodID() && !c.progressBar.isTimeUp()) {
+                waitress.setDish(null);
+                c.setDish(null);
+                repaint();
+            }
+        }
+    }
+
+    if (!waitressReturning && currentWaitressPath != null) {
+        List<Point> reversed = new ArrayList<>();
+        for (int i = currentWaitressPath.size() - 2; i >= 0; i--) {
+            reversed.add(currentWaitressPath.get(i));
+        }
+
+        currentWaitressPath = reversed;
+        waitressTargetIndex = 0;
+        waitressReturning = true;
+    } else {
+        waitressMoving = false;
+        waitressReturning = false;
+        if (waitressMoveTimer != null) {
+            waitressMoveTimer.stop();
+        }
+    }
+}
+
 
     private List<Point> createPath(int startX, int startY, int targetX, int targetY) {
         List<Point> path = new ArrayList<>();
@@ -273,4 +300,5 @@ public class CaffeGame extends JPanel {
 
         return path;
     }
+
 }
