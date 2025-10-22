@@ -21,8 +21,8 @@ public class CaffeGame extends JPanel {
 
     Customer selectedCustomer = null;
     List<Customer> customers = new ArrayList<>();
-    private int spawnX = boardWidth - 120;              
-    private int[] possibleY = {100, 200, 300};
+    private int spawnX = boardWidth - 120;
+    private int[] possibleY = { 100, 200, 300 };
 
     List<Point> path = new ArrayList<>();
     Timer timer;
@@ -54,7 +54,7 @@ ScoreSystem scoreSystem = new ScoreSystem();
         kitchen = new Kitchen();
 
         Customer.startSpawner(customers, spawnX, possibleY, this, scoreSystem); 
-        
+  
     
 
     }
@@ -75,6 +75,7 @@ ScoreSystem scoreSystem = new ScoreSystem();
             c.drawBubble(g2, kitchen, this);
         }
 
+        customers.removeIf(c -> !c.isVisible());
         scoreSystem.draw(g, getWidth());
     }
 
@@ -87,7 +88,7 @@ ScoreSystem scoreSystem = new ScoreSystem();
 
             // check if customer is clicked
 for (Customer c : customers) {
-    Rectangle rect = new Rectangle(c.getX(), c.getY(), 70, 70);
+    Rectangle rect = new Rectangle(c.getX(), c.getY(), 100, 100);
     if (rect.contains(clickedX, clickedY)) {
         // ignore if customer already seated
         if (!c.isSeated()) {
@@ -102,16 +103,21 @@ for (Customer c : customers) {
             // check if table is clicked
             for (int[] pos : table.getTablePositions()) {
                 int radius = table.getTableSize() / 2;
-                double dist = Math.sqrt(Math.pow(clickedX - pos[0], 2) + Math.pow(clickedY - pos[1], 2));
+                double dist = Math.sqrt(Math.pow(clickedX - pos[0], 2) 
+                    + Math.pow(clickedY - pos[1], 2));
                 if (dist <= radius) {
-                    if (customerSelected && selectedCustomer != null) {
-                        List<Point> customerPath = createPath(selectedCustomer.getX(), selectedCustomer.getY(), pos[0],
+                    if (customerSelected && selectedCustomer != null 
+                        && !selectedCustomer.isNextToTable() 
+                        && !table.isTableOccupied(customers, getMousePosition())) {
+                        List<Point> customerPath = createPath(selectedCustomer.getX(),
+                             selectedCustomer.getY(), pos[0],
                                 pos[1]);
                         startCustomerAnimation(selectedCustomer, customerPath);
                         selectedCustomer = null;
                         customerSelected = false;
                     } else {
-                        List<Point> waitressPath = createPath(waitress.getX(), waitress.getY(), pos[0], pos[1]);
+                        List<Point> waitressPath = createPath(waitress.getX(),
+                             waitress.getY(), pos[0], pos[1]);
                         startWaitressAnimation(waitressPath);
 
                     }
@@ -161,6 +167,7 @@ for (Customer c : customers) {
                         kitchen.toPrepare.add(customer.getDish());
                         customer.progressBar.startProgressBar();
                     }
+
                     return;
                 }
                 

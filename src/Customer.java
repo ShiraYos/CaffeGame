@@ -8,9 +8,12 @@ import java.util.Random;
 public class Customer extends Player {
 
     protected ProgressBar progressBar;
+    protected ProgressBar timeToLeave;
     protected boolean nextToTable;
     protected boolean dishCooked;
     protected boolean wasServed;
+    private boolean visible = true;
+    private boolean startTimeToLeave;
     private static Timer customerSpawnTimer;
     private static Random random = new Random();
     protected boolean isSeated = false;
@@ -22,11 +25,14 @@ public class Customer extends Player {
         super(x, y);
         this.dish = new FoodItem();
         setPlayerImage();
+        this.startTimeToLeave = false;
         this.dishCooked = false;
         this.nextToTable = false;
         this.wasServed = false;
+        timeToLeave = new ProgressBar();
         progressBar = new ProgressBar();
         this.scoreSystem = scoreSystem;  
+        this.timeToLeave.setDelay(50);
     }
 
     @Override
@@ -94,17 +100,34 @@ public class Customer extends Player {
                     }                    
                     this.progressBar.stopProgressBar();
                     img = ImageIO.read(getClass().getResource("/pictures/grin.png"));
+                    if (!startTimeToLeave) {
+                        startTimeToLeave = true;
+                        this.timeToLeave.startProgressBar();
+                    }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             } else if (this.progressBar.isTimeUp() && !wasServed) {
                 try {
                     game.remove(barPanel);
+                    game.kitchen.removeDish(this.dish);
+
                     this.dish = null;
                     img = ImageIO.read(getClass().getResource("/pictures/rage.png"));
+                    if (!startTimeToLeave) {
+                        startTimeToLeave = true;
+                        this.timeToLeave.startProgressBar();
+                    }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
+            }
+
+            if (startTimeToLeave) {
+                removeCustomer();
             }
 
             g.setColor(Color.white);
@@ -118,8 +141,9 @@ public class Customer extends Player {
     }
 
     public static void startSpawner(List<Customer> customers, int spawnX, int[] possibleY, JPanel panel, ScoreSystem scoreSystem) {
-        if (customerSpawnTimer != null && customerSpawnTimer.isRunning())
+        if (customerSpawnTimer != null && customerSpawnTimer.isRunning()) {
             return;
+        }
 
         customerSpawnTimer = new Timer(0, null);
         customerSpawnTimer.addActionListener(e -> {
@@ -128,16 +152,22 @@ public class Customer extends Player {
             customers.add(newCustomer);
             panel.repaint();
 
-            int nextDelay = 2000 + random.nextInt(4000);
+            int nextDelay = 6000 + random.nextInt(4000);
             customerSpawnTimer.setInitialDelay(nextDelay);
             customerSpawnTimer.setDelay(nextDelay);
             customerSpawnTimer.restart();
         });
 
-        int initialDelay = 2000 + random.nextInt(4000);
+        int initialDelay = 5000 + random.nextInt(4000);
         customerSpawnTimer.setInitialDelay(initialDelay);
-        customerSpawnTimer.setRepeats(false);
+        customerSpawnTimer.setRepeats(true);
         customerSpawnTimer.start();
+    }
+
+    public void removeCustomer() {
+        if (startTimeToLeave && timeToLeave.isTimeUp()) {
+            markForRemoval();
+        }
     }
 
     public static void stopSpawner() {
@@ -145,6 +175,17 @@ public class Customer extends Player {
             customerSpawnTimer.stop();
         }
     }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void markForRemoval() {
+        this.visible = false;
+        progressBar.stopProgressBar();
+        timeToLeave.stopProgressBar();
+    }
+
 
     public boolean isSeated() {
         return isSeated;
