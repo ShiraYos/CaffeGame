@@ -61,4 +61,10 @@ public class Kitchen {
         this.toPrepare.add(toSwitch);
     }
 
+    public void removeDish(FoodItem dish) {
+        if (dish != null) {
+            toPrepare.remove(dish);
+        }
+    }
+
 }

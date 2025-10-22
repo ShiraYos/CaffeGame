@@ -108,7 +108,8 @@ public class Customer extends Player {
             } else if (this.progressBar.isTimeUp() && !wasServed) {
                 try {
                     game.remove(barPanel);
-                    game.kitchen.toPrepare.remove(this.dish);
+                    game.kitchen.removeDish(this.dish);
+
                     this.dish = null;
                     img = ImageIO.read(getClass().getResource("/pictures/rage.png"));
                     if (!startTimeToLeave) {
