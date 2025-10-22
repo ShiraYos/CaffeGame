@@ -13,16 +13,20 @@ public class Customer extends Player {
     protected boolean wasServed;
     private static Timer customerSpawnTimer;
     private static Random random = new Random();
+    protected boolean isSeated = false;
+    
+    ScoreSystem scoreSystem;
+    private boolean scoreGiven = false;
 
-    public Customer(int x, int y) {
+    public Customer(int x, int y, ScoreSystem scoreSystem) {
         super(x, y);
         this.dish = new FoodItem();
         setPlayerImage();
         this.dishCooked = false;
         this.nextToTable = false;
-        ;
         this.wasServed = false;
         progressBar = new ProgressBar();
+        this.scoreSystem = scoreSystem;  
     }
 
     @Override
@@ -59,7 +63,6 @@ public class Customer extends Player {
     }
 
     void drawBubble(Graphics g, Kitchen kitchen, CaffeGame game) {
-
         if (isNextToTable()) {
             BufferedImage img = null;
             JPanel barPanel = this.progressBar.getPanel();
@@ -68,30 +71,29 @@ public class Customer extends Player {
                 img = dish.getPhoto();
 
                 // Add progress bar
-
-                if (this.progressBar != null) {
-                    game.add(barPanel);
-                    barPanel.setBounds(
-                            this.getX() + 10,
-                            this.getY(),
-                            10, 50);
-
+                if (this.progressBar != null && game != null) {
+                    if (barPanel.getParent() != game) {
+                        game.add(barPanel); // only add once
+                    }
+                    barPanel.setBounds(this.getX() + 10, this.getY(), 10, 50);
                 }
 
                 if (!dishCooked) {
                     dishCooked = true;
                     kitchen.prepareDish(this.dish, game);
                 }
-
             }
 
             if (!this.progressBar.isTimeUp() && this.dish == null) {
                 try {
                     game.remove(barPanel);
                     this.wasServed = true;
+                    if (wasServed && !scoreGiven) {
+                        scoreSystem.addScore(20);
+                        scoreGiven = true; 
+                    }                    
                     this.progressBar.stopProgressBar();
                     img = ImageIO.read(getClass().getResource("/pictures/grin.png"));
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -100,7 +102,6 @@ public class Customer extends Player {
                     game.remove(barPanel);
                     this.dish = null;
                     img = ImageIO.read(getClass().getResource("/pictures/rage.png"));
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -114,18 +115,16 @@ public class Customer extends Player {
             g.drawOval(playerX + 67, playerY, 20, 10);
             g.drawImage(img, playerX + 66, playerY - 28, 40, 40, null);
         }
-
     }
 
-    public static void startSpawner(List<Customer> customers, int spawnX, int[] possibleY, JPanel panel) {
+    public static void startSpawner(List<Customer> customers, int spawnX, int[] possibleY, JPanel panel, ScoreSystem scoreSystem) {
         if (customerSpawnTimer != null && customerSpawnTimer.isRunning())
             return;
 
         customerSpawnTimer = new Timer(0, null);
         customerSpawnTimer.addActionListener(e -> {
-
             int y = possibleY[random.nextInt(possibleY.length)];
-            Customer newCustomer = new Customer(spawnX, y);
+            Customer newCustomer = new Customer(spawnX, y, scoreSystem);
             customers.add(newCustomer);
             panel.repaint();
 
@@ -146,4 +145,13 @@ public class Customer extends Player {
             customerSpawnTimer.stop();
         }
     }
+
+    public boolean isSeated() {
+        return isSeated;
+    }
+
+    public void setSeated(boolean seated) {
+        this.isSeated = seated;
+    }
+
 }
