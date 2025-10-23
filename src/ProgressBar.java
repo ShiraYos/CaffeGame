@@ -1,6 +1,10 @@
 import java.awt.*;
 import javax.swing.*;
 
+/**
+ * This class presents a countdown progress bar.
+ * It is mainly used for the customers.
+ */
 public class ProgressBar {
 
     private JPanel panel = new JPanel(null);
@@ -10,6 +14,9 @@ public class ProgressBar {
     private int counter = 100;
     private boolean timeUp;
 
+    /**
+     * Constructor - create a new progress bar, set values and layout.
+     */
     public ProgressBar() {
         bar.setValue(100);
         bar.setForeground(Color.red);
@@ -26,20 +33,24 @@ public class ProgressBar {
 
     }
 
+    /**
+     * Start the progress bar countdown from 100.
+     *  **with an option to set a different delay.
+     */
     public void startProgressBar() {
 
-        counter = 100;
+        counter = 100; // reset counter.
 
         if (timer != null && timer.isRunning()) {
             timer.stop();
         }
 
         timer = new Timer(delay, e -> {
-            counter--;
+            counter--; // decrease counter according to the delay.
             bar.setValue(counter);
             if (counter <= 0) {
-                this.timeUp = true;
-                ((Timer) e.getSource()).stop();
+                this.timeUp = true; // stop the timer if the time is up.
+                ((Timer) e.getSource()).stop(); 
             }
         });
         timer.start();
@@ -56,11 +67,6 @@ public class ProgressBar {
 
     public void setDelay(int d) {
         this.delay = d;
-    }
-
-    public void resetCounter() {
-        this.counter = 100;
-        bar.setValue(100);
     }
 
     public void stopProgressBar() {

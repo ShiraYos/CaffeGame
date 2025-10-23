@@ -1,7 +1,10 @@
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
 
+/**
+ * This is an abstract class representing the player object.
+ * A player is a customer or  waitress.
+ */
 abstract class Player {
 
     protected FoodItem dish;
@@ -10,12 +13,18 @@ abstract class Player {
     protected int playerX;
     protected int playerY;
 
+    /**
+     * Constructor - set the player's position on screen.
+     */
     public Player(int x, int y) {
 
         this.playerX = x;
         this.playerY = y;
     }
 
+    /**
+     * 
+     */
     public void setPosition(int x, int y) {
         this.playerX = x;
         this.playerY = y;
