@@ -16,7 +16,7 @@ public class App {
         CaffeGame game = new CaffeGame();
         
         Menu m = new Menu();
-        MemoryGame mg = new MemoryGame(frame, game.menu.getMenu());
+        MemoryGame mg = new MemoryGame(frame, m);
 
         frame.add(game, BorderLayout.CENTER);
         frame.pack();
