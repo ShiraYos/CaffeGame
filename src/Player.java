@@ -2,8 +2,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 /**
- * This is an abstract class representing the player object.
- * A player is a customer or  waitress.
+ * This class describes an abstract player.
+ * A player can be a customer or a waitress.
  */
 abstract class Player {
 
@@ -14,7 +14,7 @@ abstract class Player {
     protected int playerY;
 
     /**
-     * Constructor - set the player's position on screen.
+     * Create a new player object in a given position.
      */
     public Player(int x, int y) {
 
@@ -23,7 +23,7 @@ abstract class Player {
     }
 
     /**
-     * 
+     * Set a new position.
      */
     public void setPosition(int x, int y) {
         this.playerX = x;
