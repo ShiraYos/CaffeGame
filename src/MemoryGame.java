@@ -7,13 +7,13 @@ import javax.swing.*;
 
 public class MemoryGame extends JPanel {
 
-    private ArrayList<FoodItem> menu;
+    private Menu menu;
     private List<FoodItem> unlockedItems;
     private ArrayList<FoodItem> sequence = new ArrayList<>();
     private ArrayList<ArrayList<FoodItem>> answers;
     private boolean showSequence = true;
 
-    public MemoryGame(JFrame parent, ArrayList<FoodItem> menu) {
+    public MemoryGame(JFrame parent, Menu menu) {
 
         setPreferredSize(new Dimension(600, 400));
         setDoubleBuffered(true);
@@ -21,12 +21,7 @@ public class MemoryGame extends JPanel {
         setBackground(Color.PINK);
 
         // Only use unlocked items
-        unlockedItems = new ArrayList<>();
-        for (FoodItem item : menu) {
-            if (item.isUnlocked()) {
-                unlockedItems.add(item);
-            }
-        }
+        unlockedItems = menu.getUnlockedMenu();
 
         answers = new ArrayList<>();
         this.menu = menu;
@@ -47,9 +42,9 @@ public class MemoryGame extends JPanel {
         answersJPanel.setVisible(false);
 
         new Timer(1000, e -> {
-            showSequence = false; 
+            showSequence = false;
             repaint();
-            ((Timer) e.getSource()).stop(); 
+            ((Timer) e.getSource()).stop();
             answersJPanel.setVisible(true);
         }).start();
 
@@ -132,20 +127,16 @@ public class MemoryGame extends JPanel {
         }
 
         if (correctAns) {
-            for (FoodItem item : menu) {
-                if (!item.isUnlocked()) {
-                    item.setUnlocked(true);
-                    JOptionPane.showMessageDialog(this, "CORRECT - new item unlocked - " 
-                        + item.getName().getText());
-                    SwingUtilities.getWindowAncestor(this).dispose();
-                    break;
-                }
-            }
+
+            FoodItem newItem = this.menu.unlockNext();
+            JOptionPane.showMessageDialog(this, "CORRECT - new item unlocked - "
+                    + newItem.getName().getText());
+            SwingUtilities.getWindowAncestor(this).dispose();
+
         } else {
             JOptionPane.showMessageDialog(this, "WRONG");
             SwingUtilities.getWindowAncestor(this).dispose();
         }
-
 
     }
 }

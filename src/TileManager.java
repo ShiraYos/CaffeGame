@@ -1,22 +1,29 @@
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-
 import javax.imageio.ImageIO;
 
+/**
+ * This class creates the game background.
+ * It takes a single tile photo and draw it multiple times to fill the screen.
+ */
 public class TileManager {
 
     CaffeGame gamePanel;
     BufferedImage tileImage;
 
+    /**
+     * Constructor - get the game panel and create tile image.
+     */
     public TileManager(CaffeGame game) {
         this.gamePanel = game;
         getTileImage();
 
     }
 
+    /**
+     * Get tile image from the pictures library.
+     */
     public void getTileImage() {
 
         try {
@@ -28,6 +35,9 @@ public class TileManager {
 
     }
 
+    /**
+     * Draw the single tile image multiple times until it fills the screen.
+     */
     public void draw(Graphics g) {
 
         int col = 0;
