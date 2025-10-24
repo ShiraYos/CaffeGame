@@ -9,13 +9,15 @@ public class ScoreSystem {
     private int targetScore = 0;
     private int displayedScore = 0;
 
-    private int maxScore = 100; 
+    private int maxScore = 100;
     private int unlockedStars = 0;
     private final int totalStars = 5;
 
     private Timer animationTimer;
     private BufferedImage starFilled;
     private BufferedImage starGrey;
+
+    private Runnable onStarUnlocked;
 
     public ScoreSystem() {
         loadStarImages();
@@ -28,6 +30,10 @@ public class ScoreSystem {
             }
         });
         animationTimer.start();
+    }
+
+    public void setOnStarUnlocked(Runnable onStarUnlocked) {
+        this.onStarUnlocked = onStarUnlocked;
     }
 
     private void loadStarImages() {
@@ -52,6 +58,9 @@ public class ScoreSystem {
     private void unlockStar() {
         if (unlockedStars < totalStars) {
             unlockedStars++;
+            if (onStarUnlocked != null) {
+                onStarUnlocked.run();
+            }
         }
     }
 

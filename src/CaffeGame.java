@@ -35,7 +35,9 @@ public class CaffeGame extends JPanel {
     private int waitressTargetIndex;
     private boolean waitressReturning;
     private final double WAITRESS_SPEED = 2.0;
+     
     ScoreSystem scoreSystem = new ScoreSystem();
+
 
     public CaffeGame() {
         setPreferredSize(new Dimension(boardWidth, boardHeight));
@@ -52,6 +54,17 @@ public class CaffeGame extends JPanel {
         kitchen = new Kitchen();
 
         Customer.startSpawner(customers, spawnX, possibleY, this, scoreSystem, menu);
+
+        scoreSystem.setOnStarUnlocked(() -> {
+            SwingUtilities.invokeLater(() -> {
+                JFrame frame = new JFrame("Memory Game");
+                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                frame.add(new MemoryGame(frame, menu));
+                frame.pack();
+                frame.setLocationRelativeTo(null);
+                frame.setVisible(true);
+            });
+        });
     }
 
     @Override
