@@ -145,32 +145,36 @@ public class CaffeGame extends JPanel {
     }
 
     private void startCustomerAnimation(Customer customer, List<Point> path) {
+        customer.setMovingToTable(true);
+    
         Timer moveTimer = new Timer(10, null);
         moveTimer.addActionListener(new ActionListener() {
             private int targetIndex = 1;
             private final double speed = 2.0;
-
+    
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (targetIndex >= path.size()) {
                     moveTimer.stop();
-                    customer.nextToTable = true;
+                    customer.setMovingToTable(false);
+                    customer.setNextToTable(true);
+    
                     if (customer.getDish() != null) {
                         kitchen.toPrepare.add(customer.getDish());
-                        customer.progressBar.startProgressBar();
+                        if (customer.progressBar != null) customer.progressBar.startProgressBar();
                     }
-
+                    repaint();
                     return;
                 }
-
+    
                 Point target = path.get(targetIndex);
                 int currentX = customer.getX();
                 int currentY = customer.getY();
-
+    
                 double dx = target.x - currentX;
                 double dy = target.y - currentY;
                 double distance = Math.sqrt(dx * dx + dy * dy);
-
+    
                 if (distance <= speed) {
                     customer.setPosition(target.x, target.y);
                     targetIndex++;
@@ -179,20 +183,19 @@ public class CaffeGame extends JPanel {
                     double stepY = (dy / distance) * speed;
                     customer.setPosition((int) (currentX + stepX), (int) (currentY + stepY));
                 }
-
+    
                 repaint();
             }
         });
         moveTimer.start();
     }
+    
 
     private void startWaitressAnimation(List<Point> path) {
-        // stop any existing timer to prevent overlaps
         if (waitressMoveTimer != null && waitressMoveTimer.isRunning()) {
             waitressMoveTimer.stop();
         }
 
-        // clone path to avoid reference issues
         currentWaitressPath = new ArrayList<>(path);
         waitressTargetIndex = 1;
         waitressReturning = false;

@@ -12,10 +12,32 @@ public class Music {
                 AudioInputStream audioInput = AudioSystem.getAudioInputStream(musicPath);
                 clip = AudioSystem.getClip();
                 clip.open(audioInput);
-                clip.loop(Clip.LOOP_CONTINUOUSLY); // loop forever
+
+                FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+                gainControl.setValue(-30.0f); 
+    
+                clip.loop(Clip.LOOP_CONTINUOUSLY);
                 clip.start();
             } else {
                 System.out.println("Music file not found: " + musicFilePath);
+            }
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            e.printStackTrace();
+        }
+    }
+    
+
+
+    public void playSound(String soundFilePath) {
+        try {
+            File soundFile = new File(soundFilePath);
+            if (soundFile.exists()) {
+                AudioInputStream audioInput = AudioSystem.getAudioInputStream(soundFile);
+                Clip clip = AudioSystem.getClip();
+                clip.open(audioInput);
+                clip.start(); // play once
+            } else {
+                System.out.println("Sound file not found: " + soundFilePath);
             }
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             e.printStackTrace();

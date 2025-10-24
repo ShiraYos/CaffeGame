@@ -11,7 +11,7 @@ public class App {
         frame.setLayout(new BorderLayout());
 
         Music bgSound = new Music();
-        bgSound.playMusic("src/sounds/bg_music.wav");
+        bgSound.playMusic("src/sounds/bgMusic.wav");
 
         CaffeGame game = new CaffeGame();
         
