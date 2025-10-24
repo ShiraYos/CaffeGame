@@ -1,10 +1,13 @@
-import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
+import javax.swing.*;
 
+/**
+ * This class describes a kitchen object. 
+ * Includes the kitchen drawing representation.
+ * In addition manages the displayed items according to the user orders.
+ */
 public class Kitchen {
 
     ArrayList<FoodItem> toPrepare;

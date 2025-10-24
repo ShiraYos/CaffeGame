@@ -1,7 +1,9 @@
 import java.awt.BorderLayout;
 import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
 
+/**
+ * Main - start the game board panel and set frame settings.
+ */
 public class App {
     public static void main(String[] args) throws Exception {
 
