@@ -1,6 +1,5 @@
-import javax.swing.*;
-import java.awt.*;
 import java.awt.image.BufferedImage;
+import javax.swing.*;
 
 /**
  * This class describes a food item in the menu.
@@ -17,6 +16,9 @@ public class FoodItem {
     private int screenX;
     private int screenY;
 
+    /**
+     * Constructor - create a new food item with a name, picture, id and set if its locked.
+     */
     public FoodItem(JLabel name, BufferedImage pic, int id, boolean unlock) {
         this.dishName = name;
         this.dishPicture = pic;
@@ -24,12 +26,18 @@ public class FoodItem {
         this.unlocked = unlock;
     }
 
+    /**
+     * Copy constructor.
+     */
     public FoodItem(FoodItem item) {
         this.dishName = item.getName();
         this.dishPicture = item.getPhoto();
         this.foodID = item.foodID;
     }
 
+    /**
+     * Random food item constructor.
+     */
     public FoodItem(Menu m) {
         FoodItem item = m.randomFoodItem();
         this.dishName = item.dishName;
@@ -37,6 +45,9 @@ public class FoodItem {
         this.foodID = item.foodID;
     }
 
+    /**
+     * Set the item's position on scrren.
+     */
     public void setScreenPosition(int x, int y) {
         this.screenX = x;
         this.screenY = y;

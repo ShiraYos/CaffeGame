@@ -5,6 +5,8 @@ import javax.swing.*;
 
 /**
  * This class generates different food items for the menu.
+ * It includes two menus - the full menu and the one only woth the unlocked
+ * items.
  */
 public class Menu {
 
@@ -12,6 +14,9 @@ public class Menu {
     private ArrayList<FoodItem> unlockedItems;
     private Random random;
 
+    /**
+     * Constructor - generate the two menues.
+     */
     public Menu() {
 
         this.menu = new ArrayList<FoodItem>();
@@ -36,17 +41,22 @@ public class Menu {
             menu.add(new FoodItem(new JLabel("Orange juice"),
                     ImageIO.read(getClass().getResource("/pictures/orange.png")), 5, true));
 
-        } catch (Exception e) {
+        } catch (Exception e) { // Fallback in case image doesn't exist
             e.printStackTrace();
         }
 
     }
 
+    /**
+     * Generate the unlocked items menu from the full menu.
+     */
     public void generateUnlockedMenu() {
+        // Check if unlocked items is empty and clear it if not - so items dont
+        // overloop.
         if (unlockedItems != null) {
             unlockedItems.clear();
         }
-        
+
         for (FoodItem item : menu) {
             if (item.isUnlocked()) {
                 unlockedItems.add(item);
@@ -54,6 +64,9 @@ public class Menu {
         }
     }
 
+    /**
+     * Unlock the next locked item in the menu.
+     */
     public FoodItem unlockNext() {
         for (FoodItem item : menu) {
             if (!item.isUnlocked()) {
@@ -63,10 +76,14 @@ public class Menu {
             }
         }
 
-        //In case no more locked items
+        // In case no more locked items
         return null;
     }
 
+    /**
+     * Get a random food item from the unlocked menu - used to generate customers
+     * orders.
+     */
     public FoodItem randomFoodItem() {
 
         int place = random.nextInt(unlockedItems.size());
@@ -79,10 +96,13 @@ public class Menu {
         return this.menu;
     }
 
-        public ArrayList<FoodItem> getUnlockedMenu() {
+    public ArrayList<FoodItem> getUnlockedMenu() {
         return this.unlockedItems;
     }
 
+    /**
+     * Update the food preparation according to customers orders.
+     */
     public void updateMenu(FoodItem item) {
         for (FoodItem current : this.menu) {
             if (current.getFoodID() == item.getFoodID()) {

@@ -34,7 +34,7 @@ public class CaffeGame extends JPanel {
     private List<Point> currentWaitressPath;
     private int waitressTargetIndex;
     private boolean waitressReturning;
-    private final double WAITRESS_SPEED = 2.0;
+    private final double WAITRESS_SPEED = 3.0;
      
     ScoreSystem scoreSystem = new ScoreSystem();
 

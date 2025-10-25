@@ -2,8 +2,14 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
+/**
+ * This class represents a waitress player.
+ */
 public class Waitress extends Player {
 
+    /**
+     * Constructor - create a new waitress in a given position and set player's image.
+     */
     public Waitress(int startX, int startY) {
 
         super(startX, startY);
@@ -23,7 +29,7 @@ public class Waitress extends Player {
                 g.drawImage(this.dish.getPhoto(), drawX + 65, drawY + 22, null);
             }
 
-        } else {
+        } else { // Fallback in case image is null.
             g.setColor(Color.RED);
             g.fillOval(this.getX(), this.getY(), 20, 20);
         }
@@ -32,7 +38,8 @@ public class Waitress extends Player {
     @Override
     void setPlayerImage() {
         try {
-            BufferedImage original = ImageIO.read(getClass().getResource("/pictures/waitress2.png"));
+            BufferedImage original = 
+                ImageIO.read(getClass().getResource("/pictures/waitress2.png"));
 
             Image tmp = original.getScaledInstance(100, 100, Image.SCALE_SMOOTH); // scale image
             this.playerImage = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
@@ -41,7 +48,7 @@ public class Waitress extends Player {
             g2.drawImage(tmp, 0, 0, null);
             g2.dispose();
 
-        } catch (Exception e) {
+        } catch (Exception e) { // Fallback in case of image doesnt exist
             e.printStackTrace();
             this.playerImage = null;
         }

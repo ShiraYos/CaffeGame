@@ -1,6 +1,9 @@
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
+
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import javax.swing.*;
@@ -61,15 +64,26 @@ public class Customer extends Player {
 
     @Override
     void setPlayerImage() {
-        try {
-            BufferedImage original = ImageIO.read(getClass().getResource("/pictures/waitress2.png"));
-            Image tmp = original.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+       try {
+
+            // Generate randon customer image out of three options.
+            ArrayList<BufferedImage> photos = new ArrayList<>();
+
+            photos.add(ImageIO.read(getClass().getResource("/pictures/customer1.png")));
+            photos.add(ImageIO.read(getClass().getResource("/pictures/customer2.png")));
+            photos.add(ImageIO.read(getClass().getResource("/pictures/customer3.png")));
+
+            // Randomly shuffle and pick one
+            Collections.shuffle(photos, random);
+            BufferedImage chosen = photos.get(0);
+
+            Image tmp = chosen.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
             this.playerImage = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
             Graphics2D g2 = this.playerImage.createGraphics();
             g2.drawImage(tmp, 0, 0, null);
             g2.dispose();
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(); // Fall back in case image does not exist
             this.playerImage = null;
         }
     }
