@@ -65,6 +65,12 @@ public class CaffeGame extends JPanel {
                 frame.setVisible(true);
             });
         });
+
+        scoreSystem.setOnGameWon(() -> {
+            SwingUtilities.invokeLater(() -> showWinScreen());
+        });
+        
+        
     }
 
     @Override
@@ -307,4 +313,68 @@ public class CaffeGame extends JPanel {
 
         return path;
     }
+
+    private void showWinScreen() {
+        JFrame winFrame = new JFrame("Congratulations!");
+        winFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        winFrame.setSize(400, 250);
+        winFrame.setLocationRelativeTo(null);
+    
+        JPanel panel = new JPanel();
+        panel.setBackground(new Color(250, 230, 240));
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+    
+        JLabel congrats = new JLabel("Congratulations! You Won!", SwingConstants.CENTER);
+        congrats.setFont(new Font("Arial", Font.BOLD, 20));
+        congrats.setAlignmentX(Component.CENTER_ALIGNMENT);
+        congrats.setForeground(new Color(220, 70, 130));
+    
+        JButton restartButton = new JButton("Play Again?");
+        restartButton.setFont(new Font("Arial", Font.BOLD, 16));
+        restartButton.setBackground(new Color(255, 240, 245)); 
+        restartButton.setForeground(new Color(120, 30, 60));  
+        restartButton.setFocusPainted(false);
+        restartButton.setOpaque(true);
+        restartButton.setBorderPainted(true);
+        restartButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+    
+        restartButton.addActionListener(e -> {
+            winFrame.dispose();
+            resetGame();
+        });
+    
+        panel.add(Box.createVerticalGlue());
+        panel.add(congrats);
+        panel.add(Box.createRigidArea(new Dimension(0, 20)));
+        panel.add(restartButton);
+        panel.add(Box.createVerticalGlue());
+        winFrame.add(panel);
+        winFrame.setVisible(true);
+    }
+
+    private void resetGame() {
+        Customer.stopSpawner();
+    
+        scoreSystem = new ScoreSystem();
+        scoreSystem.setOnStarUnlocked(() -> {
+            SwingUtilities.invokeLater(() -> {
+                JFrame frame = new JFrame("Memory Game");
+                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                frame.add(new MemoryGame(frame, menu));
+                frame.pack();
+                frame.setLocationRelativeTo(null);
+                frame.setVisible(true);
+            });
+        });
+        scoreSystem.setOnGameWon(() -> showWinScreen());
+
+        customers.clear();
+  
+        Customer.startSpawner(customers, spawnX, possibleY, this, scoreSystem, menu);
+    
+        repaint();
+    }
+    
+    
 }

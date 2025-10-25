@@ -18,6 +18,7 @@ public class ScoreSystem {
     private BufferedImage starGrey;
 
     private Runnable onStarUnlocked;
+    private Runnable onGameWon; 
 
     public ScoreSystem() {
         loadStarImages();
@@ -32,9 +33,13 @@ public class ScoreSystem {
         animationTimer.start();
     }
 
-    public void setOnStarUnlocked(Runnable onStarUnlocked) {
-        this.onStarUnlocked = onStarUnlocked;
+    public void setOnStarUnlocked(Runnable callback) {
+        this.onStarUnlocked = callback;
     }
+    
+    public void setOnGameWon(Runnable callback) {
+        this.onGameWon = callback;
+    }    
 
     private void loadStarImages() {
         try {
@@ -58,11 +63,15 @@ public class ScoreSystem {
     private void unlockStar() {
         if (unlockedStars < totalStars) {
             unlockedStars++;
-            if (onStarUnlocked != null) {
-                onStarUnlocked.run();
+    
+            if (unlockedStars < totalStars) {
+                if (onStarUnlocked != null) onStarUnlocked.run();
+            } else {
+                if (onGameWon != null) onGameWon.run();
             }
         }
     }
+    
 
     public void draw(Graphics g, int panelWidth) {
         Graphics2D g2 = (Graphics2D) g;
