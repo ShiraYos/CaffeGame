@@ -2,6 +2,9 @@ import java.io.File;
 import java.io.IOException;
 import javax.sound.sampled.*;
 
+/**
+ * This class adds music to the game.
+ */
 public class Music {
     private Clip clip;
 
@@ -13,7 +16,8 @@ public class Music {
                 clip = AudioSystem.getClip();
                 clip.open(audioInput);
 
-                FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+                FloatControl gainControl = 
+                    (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
                 gainControl.setValue(-30.0f); 
     
                 clip.loop(Clip.LOOP_CONTINUOUSLY);
@@ -27,7 +31,9 @@ public class Music {
     }
     
 
-
+    /**
+     * Play a certain sound file.
+     */
     public void playSound(String soundFilePath) {
         try {
             File soundFile = new File(soundFilePath);
@@ -44,6 +50,9 @@ public class Music {
         }
     }
 
+    /**
+     * Stop playing the sound.
+     */
     public void stopMusic() {
         if (clip != null && clip.isRunning()) {
             clip.stop();

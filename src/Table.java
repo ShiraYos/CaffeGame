@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.util.List;
 import javax.imageio.ImageIO;
 
-
+/**
+ * This class represents the table settings.
+ */
 public class Table {
     private final int tableSize = 70;
     private final int rows = 3;
@@ -13,6 +15,9 @@ public class Table {
     private int[][] tablePositions;
     private BufferedImage tableImage;
 
+    /**
+     * Constructor - create new table positions array and load oicture.
+     */
     public Table() {
         tablePositions = new int[rows * cols][2];
 
@@ -25,6 +30,10 @@ public class Table {
         }
     }
 
+    /**
+     * Calculate table positions with respect to the game panel
+     *  and insert into array.
+     */
     public void calculatePositions(int panelWidth, int panelHeight) {
         int spacingX = panelWidth / (cols + 1);
         int spacingY = panelHeight / (rows + 1);
@@ -39,6 +48,9 @@ public class Table {
         }
     }
 
+    /**
+     * Draw tables in assigned positions.
+     */
     public void drawTables(Graphics g) {
         for (int i = 0; i < tablePositions.length; i++) {
             int x = tablePositions[i][0] - tableSize / 2;
@@ -54,9 +66,6 @@ public class Table {
                 g.drawOval(x, y, tableSize, tableSize);
             }
 
-            // Label
-            g.setColor(Color.BLACK);
-            g.drawString("T" + (i + 1), x + tableSize / 2 - 10, y + tableSize + 15);
         }
     }
 
@@ -68,6 +77,10 @@ public class Table {
         return tableSize;
     }
 
+    /**
+     * Check if table is occupied - if there exists a customer 
+     * within range of click.
+     */
     public boolean isTableOccupied(List<Customer> customers, Point p) {
         for (Customer customer : customers) {
             double distance = Math.sqrt(Math.pow(p.getX() - customer.getX(), 2)

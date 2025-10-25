@@ -167,6 +167,7 @@ public class CaffeGame extends JPanel {
         }
     }
 
+    // Customer animation - movement to selected table.
     private void startCustomerAnimation(Customer customer, List<Point> path) {
         customer.setMovingToTable(true);
     
@@ -214,6 +215,7 @@ public class CaffeGame extends JPanel {
     }
     
 
+    // Waitress movement to a selected table.
     private void startWaitressAnimation(List<Point> path) {
         if (waitressMoveTimer != null && waitressMoveTimer.isRunning()) {
             waitressMoveTimer.stop();
@@ -318,6 +320,7 @@ public class CaffeGame extends JPanel {
         return path;
     }
 
+    // Show winning screen - in case user reaches 5 stars.
     private void showWinScreen() {
         JFrame winFrame = new JFrame("Congratulations!");
         winFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -357,6 +360,7 @@ public class CaffeGame extends JPanel {
         winFrame.setVisible(true);
     }
 
+    // Reset game if user wants to play again.
     private void resetGame() {
         Customer.stopSpawner();
     

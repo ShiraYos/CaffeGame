@@ -3,6 +3,9 @@ import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
+/**
+ * This class represents the score system of the game.
+ */
 public class ScoreSystem {
 
     private int score = 0;
@@ -18,12 +21,15 @@ public class ScoreSystem {
     private BufferedImage starGrey;
 
     private Runnable onStarUnlocked;
-    private Runnable onGameWon; 
+    private Runnable onGameWon;
 
+    /**
+     * Constructor - load star image and process bar.
+     */
     public ScoreSystem() {
         loadStarImages();
 
-        animationTimer = new Timer(15, e -> {
+        animationTimer = new Timer(15, e -> { // create animation timer to increase/ decrease timer.
             if (displayedScore < targetScore) {
                 displayedScore++;
             } else if (displayedScore > targetScore) {
@@ -36,10 +42,10 @@ public class ScoreSystem {
     public void setOnStarUnlocked(Runnable callback) {
         this.onStarUnlocked = callback;
     }
-    
+
     public void setOnGameWon(Runnable callback) {
         this.onGameWon = callback;
-    }    
+    }
 
     private void loadStarImages() {
         try {
@@ -51,6 +57,10 @@ public class ScoreSystem {
         }
     }
 
+    /**
+     * Add to total score in case customer was served on time.
+     * Unlock a star if score reaches the limit.
+     */
     public void addScore(int amount) {
         targetScore += amount;
         if (targetScore >= maxScore) {
@@ -63,7 +73,7 @@ public class ScoreSystem {
     private void unlockStar() {
         if (unlockedStars < totalStars) {
             unlockedStars++;
-    
+
             if (unlockedStars < totalStars) {
                 if (onStarUnlocked != null) {
                     onStarUnlocked.run();
@@ -75,8 +85,10 @@ public class ScoreSystem {
             }
         }
     }
-    
 
+    /**
+     * Draw the star system and progress bar.
+     */
     public void draw(Graphics g, int panelWidth) {
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -95,8 +107,7 @@ public class ScoreSystem {
 
         GradientPaint gradient = new GradientPaint(
                 x, y, new Color(223, 82, 134),
-                x + fillWidth, y + barHeight, new Color(227, 82, 134)
-        );
+                x + fillWidth, y + barHeight, new Color(227, 82, 134));
         g2.setPaint(gradient);
         g2.fillRoundRect(x, y, fillWidth, barHeight, 15, 15);
 
@@ -106,7 +117,7 @@ public class ScoreSystem {
 
         g2.setFont(new Font("Arial", Font.BOLD, 14));
         g2.setColor(Color.WHITE);
-        g2.drawString(displayedScore +"/" + maxScore, x + 80, y + 15);
+        g2.drawString(displayedScore + "/" + maxScore, x + 80, y + 15);
 
         drawStars(g2, x - 15, y - 45);
     }

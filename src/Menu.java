@@ -37,7 +37,7 @@ public class Menu {
             menu.add(new FoodItem(new JLabel("Coffee"),
                     ImageIO.read(getClass().getResource("/pictures/coffee.png")), 3, true));
             menu.add(new FoodItem(new JLabel("IceCream"),
-                    ImageIO.read(getClass().getResource("/pictures/icecream.png")), 4, true));
+                    ImageIO.read(getClass().getResource("/pictures/icecream.png")), 4, false));
             menu.add(new FoodItem(new JLabel("Orange juice"),
                     ImageIO.read(getClass().getResource("/pictures/orange.png")), 5, true));
 

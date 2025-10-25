@@ -12,15 +12,13 @@ public class App {
         frame.setResizable(false);
         frame.setLayout(new BorderLayout());
 
-        Music bgSound = new Music();
+        Music bgSound = new Music(); // add music
         bgSound.playMusic("src/sounds/bgMusic.wav");
 
         CaffeGame game = new CaffeGame();
         
-        Menu m = new Menu();
-        MemoryGame mg = new MemoryGame(frame, m);
-
-        frame.add(game, BorderLayout.CENTER);
+   
+        frame.add(game, BorderLayout.CENTER); // add caffe game to the frame
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
