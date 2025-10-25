@@ -1,4 +1,4 @@
-## Waiter caffe game
+## Waitress caffe game
 
 **Project Overview**
 This is a java based GUI game where the player takes the role of a waiter serving customers in a small caffe.
