@@ -70,7 +70,9 @@ public class ProgressBar {
     }
 
     public void stopProgressBar() {
+        if (this.timer != null) {
         this.timer.stop();
+        }
     }
 
     public boolean isTimeUp() {
