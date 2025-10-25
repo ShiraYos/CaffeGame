@@ -53,8 +53,10 @@ public class CaffeGame extends JPanel {
         waitress = new Waitress(50, 500);
         kitchen = new Kitchen();
 
+        // Start customer spawner
         Customer.startSpawner(customers, spawnX, possibleY, this, scoreSystem, menu);
 
+        // Display mini game whe a star is unlocked
         scoreSystem.setOnStarUnlocked(() -> {
             SwingUtilities.invokeLater(() -> {
                 JFrame frame = new JFrame("Memory Game");
@@ -66,6 +68,7 @@ public class CaffeGame extends JPanel {
             });
         });
 
+        // Display winning screen on 5 stars
         scoreSystem.setOnGameWon(() -> {
             SwingUtilities.invokeLater(() -> showWinScreen());
         });
@@ -84,12 +87,13 @@ public class CaffeGame extends JPanel {
         waitress.drawPlayer(g2);
         kitchen.drawKitchen(g2, getWidth(), getHeight());
 
+        // Updating the customers drawing
         for (Customer c : customers) {
-            c.drawPlayer(g2);
+            c.drawPlayer(g2); 
             c.drawBubble(g2, kitchen, this);
         }
 
-        customers.removeIf(c -> !c.isVisible());
+        customers.removeIf(c -> !c.isVisible()); // Remove customer if needed
         scoreSystem.draw(g, getWidth());
     }
 
@@ -260,7 +264,7 @@ public class CaffeGame extends JPanel {
             double dist = Math.sqrt(Math.pow(c.getX() - waitress.getX(), 2)
                     + Math.pow(c.getY() - waitress.getY(), 2));
 
-            if (dist < 50 && waitress.getDish() != null) {
+            if (dist < 50 && waitress.getDish() != null) { // Serving dish to a customer
                 if (c.getDish() != null &&
                         c.getDish().getFoodID() == waitress.getDish().getFoodID() && !c.progressBar.isTimeUp()) {
                     waitress.setDish(null);

@@ -65,9 +65,13 @@ public class ScoreSystem {
             unlockedStars++;
     
             if (unlockedStars < totalStars) {
-                if (onStarUnlocked != null) onStarUnlocked.run();
+                if (onStarUnlocked != null) {
+                    onStarUnlocked.run();
+                }
             } else {
-                if (onGameWon != null) onGameWon.run();
+                if (onGameWon != null) {
+                    onGameWon.run();
+                }
             }
         }
     }
