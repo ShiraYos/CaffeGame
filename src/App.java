@@ -12,6 +12,9 @@ public class App {
         frame.setResizable(false);
         frame.setLayout(new BorderLayout());
 
+        Music bgSound = new Music();
+        bgSound.playMusic("src/sounds/bgMusic.wav");
+
         CaffeGame game = new CaffeGame();
         
         Menu m = new Menu();

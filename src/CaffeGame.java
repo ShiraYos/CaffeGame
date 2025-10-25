@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
 
-/**
- * This class represents the main Caffe game panel.
- */
 public class CaffeGame extends JPanel {
 
     // SCREEN SETTINGS
@@ -37,13 +34,11 @@ public class CaffeGame extends JPanel {
     private List<Point> currentWaitressPath;
     private int waitressTargetIndex;
     private boolean waitressReturning;
-    private final double WAITRESS_SPEED = 2.0;
+    private final double WAITRESS_SPEED = 3.0;
+     
     ScoreSystem scoreSystem = new ScoreSystem();
 
-    /**
-     * Constructor - create new game panel and new objects
-     * relevant to the game.
-     */
+
     public CaffeGame() {
         setPreferredSize(new Dimension(boardWidth, boardHeight));
         tileManager = new TileManager(this);
@@ -59,6 +54,17 @@ public class CaffeGame extends JPanel {
         kitchen = new Kitchen();
 
         Customer.startSpawner(customers, spawnX, possibleY, this, scoreSystem, menu);
+
+        scoreSystem.setOnStarUnlocked(() -> {
+            SwingUtilities.invokeLater(() -> {
+                JFrame frame = new JFrame("Memory Game");
+                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                frame.add(new MemoryGame(frame, menu));
+                frame.pack();
+                frame.setLocationRelativeTo(null);
+                frame.setVisible(true);
+            });
+        });
     }
 
     @Override
@@ -152,32 +158,36 @@ public class CaffeGame extends JPanel {
     }
 
     private void startCustomerAnimation(Customer customer, List<Point> path) {
+        customer.setMovingToTable(true);
+    
         Timer moveTimer = new Timer(10, null);
         moveTimer.addActionListener(new ActionListener() {
             private int targetIndex = 1;
             private final double speed = 2.0;
-
+    
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (targetIndex >= path.size()) {
                     moveTimer.stop();
-                    customer.nextToTable = true;
+                    customer.setMovingToTable(false);
+                    customer.setNextToTable(true);
+    
                     if (customer.getDish() != null) {
                         kitchen.toPrepare.add(customer.getDish());
-                        customer.progressBar.startProgressBar();
+                        if (customer.progressBar != null) customer.progressBar.startProgressBar();
                     }
-
+                    repaint();
                     return;
                 }
-
+    
                 Point target = path.get(targetIndex);
                 int currentX = customer.getX();
                 int currentY = customer.getY();
-
+    
                 double dx = target.x - currentX;
                 double dy = target.y - currentY;
                 double distance = Math.sqrt(dx * dx + dy * dy);
-
+    
                 if (distance <= speed) {
                     customer.setPosition(target.x, target.y);
                     targetIndex++;
@@ -186,20 +196,19 @@ public class CaffeGame extends JPanel {
                     double stepY = (dy / distance) * speed;
                     customer.setPosition((int) (currentX + stepX), (int) (currentY + stepY));
                 }
-
+    
                 repaint();
             }
         });
         moveTimer.start();
     }
+    
 
     private void startWaitressAnimation(List<Point> path) {
-        // stop any existing timer to prevent overlaps
         if (waitressMoveTimer != null && waitressMoveTimer.isRunning()) {
             waitressMoveTimer.stop();
         }
 
-        // clone path to avoid reference issues
         currentWaitressPath = new ArrayList<>(path);
         waitressTargetIndex = 1;
         waitressReturning = false;
@@ -246,9 +255,8 @@ public class CaffeGame extends JPanel {
                     + Math.pow(c.getY() - waitress.getY(), 2));
 
             if (dist < 50 && waitress.getDish() != null) {
-                if (c.getDish() != null
-                        && c.getDish().getFoodID() == waitress.getDish().getFoodID() 
-                        && !c.progressBar.isTimeUp()) {
+                if (c.getDish() != null &&
+                        c.getDish().getFoodID() == waitress.getDish().getFoodID() && !c.progressBar.isTimeUp()) {
                     waitress.setDish(null);
                     c.setDish(null);
                     repaint();
@@ -273,6 +281,7 @@ public class CaffeGame extends JPanel {
             }
         }
     }
+
 
     private List<Point> createPath(int startX, int startY, int targetX, int targetY) {
         List<Point> path = new ArrayList<>();
