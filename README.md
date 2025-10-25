@@ -20,7 +20,7 @@ Click the customer and then the table in order to seat the customer next to the 
 * In order to serve the customer, click on the dish you want to serve from the kitchen bar and then click on the wanted table.
 * If you want to switch the chosen dish - try and press on a different dish from the kitchen bar.
 * Every time a customer is served in time - you earn points! After enough points you get to play a mini game.
-* Winning the mini game adds a new dish to the customers menu.
+* Winning the mini game, which is a memory game, adds a new dish to the customers menu.
 * Get 5 stars - WIN THE GAME!!
 
 **Features to test**
@@ -28,6 +28,6 @@ Click the customer and then the table in order to seat the customer next to the 
   - Waitress - click on a table.
   - Customer - click on a customer and then on a table.
 * Customer logic - Customer randomly appears, waits for food and reacts.
-* coring system - Points increase after serving correctly.
+* Scoring system - Points increase after serving correctly.
 * Dynamic kitchen - Food items appear and disappear according to the customers orders.
   
