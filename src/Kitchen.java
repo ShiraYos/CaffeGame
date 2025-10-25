@@ -17,8 +17,12 @@ public class Kitchen {
         toPrepare = new ArrayList<FoodItem>();
     }
 
+    /**
+     * Draw the kitchen panel and prepared items according to customers orders.
+     */
     public void drawKitchen(Graphics g, int gameWidth, int gameHeight) {
 
+        // Panel settings 
         int panelX = gameWidth - 650;
         int panelY = gameHeight - 50;
         int panelWidth = 220;
@@ -32,6 +36,7 @@ public class Kitchen {
 
         int spacing = 5;
 
+        // Draw each prepared item on screen
         for (FoodItem foodItem : toPrepare) {
             BufferedImage image = foodItem.getPhoto();
             if (foodItem.isReady() && image != null) {
@@ -50,20 +55,30 @@ public class Kitchen {
 
     }
 
+    /**
+     * Start time preparation time of a dish when a customerr is seated.
+     */
     public void prepareDish(FoodItem item, CaffeGame game) {
         Timer timer = new Timer(5000, e -> {
-            item.setIsReady(true);
+            item.setIsReady(true); // Set prepared when timer is done
             game.repaint();
         });
         timer.setRepeats(false);
         timer.start();
     }
 
+    /**
+     * This allows the user to switch items between the 
+     * waitress current dish and a different one from the kitchen ber.
+     */
     public void switchItems(FoodItem clicked, FoodItem toSwitch) {
         this.toPrepare.remove(clicked);
         this.toPrepare.add(toSwitch);
     }
 
+    /**
+     * Remove a given item from being displayed.
+     */
     public void removeDish(FoodItem dish) {
         if (dish != null) {
             toPrepare.remove(dish);

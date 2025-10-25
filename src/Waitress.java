@@ -48,7 +48,7 @@ public class Waitress extends Player {
             g2.drawImage(tmp, 0, 0, null);
             g2.dispose();
 
-        } catch (Exception e) {
+        } catch (Exception e) { // Fallback in case of image doesnt exist
             e.printStackTrace();
             this.playerImage = null;
         }

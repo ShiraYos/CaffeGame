@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
 
+/**
+ * This class represents the main Caffe game panel.
+ */
 public class CaffeGame extends JPanel {
 
     // SCREEN SETTINGS
@@ -37,6 +40,10 @@ public class CaffeGame extends JPanel {
     private final double WAITRESS_SPEED = 2.0;
     ScoreSystem scoreSystem = new ScoreSystem();
 
+    /**
+     * Constructor - create new game panel and new objects
+     * relevant to the game.
+     */
     public CaffeGame() {
         setPreferredSize(new Dimension(boardWidth, boardHeight));
         tileManager = new TileManager(this);
@@ -239,8 +246,9 @@ public class CaffeGame extends JPanel {
                     + Math.pow(c.getY() - waitress.getY(), 2));
 
             if (dist < 50 && waitress.getDish() != null) {
-                if (c.getDish() != null &&
-                        c.getDish().getFoodID() == waitress.getDish().getFoodID() && !c.progressBar.isTimeUp()) {
+                if (c.getDish() != null
+                        && c.getDish().getFoodID() == waitress.getDish().getFoodID() 
+                        && !c.progressBar.isTimeUp()) {
                     waitress.setDish(null);
                     c.setDish(null);
                     repaint();
@@ -265,7 +273,6 @@ public class CaffeGame extends JPanel {
             }
         }
     }
-
 
     private List<Point> createPath(int startX, int startY, int targetX, int targetY) {
         List<Point> path = new ArrayList<>();

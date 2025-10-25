@@ -38,6 +38,7 @@ abstract class Player {
         return this.playerY;
     }
 
+    // Set abstrat method - drawPlayer 
     abstract void drawPlayer(Graphics g);
 
     public void setDish(FoodItem item) {

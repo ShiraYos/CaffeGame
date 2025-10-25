@@ -7,6 +7,10 @@ import java.util.Random;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
+/**
+ * This class represents a customer in the game.
+ * In addition it manages the customer speech bubble and time bar.
+ */
 public class Customer extends Player {
 
     protected ProgressBar progressBar;
@@ -22,17 +26,26 @@ public class Customer extends Player {
     ScoreSystem scoreSystem;
     private boolean scoreGiven = false;
 
+    /**
+     * Constructor - create a new customer in a given position.
+     */
     public Customer(int x, int y, Menu menu, ScoreSystem scoreSystem) {
         super(x, y);
         this.dish = new FoodItem(menu);
         setPlayerImage();
+
         this.startTimeToLeave = false;
         this.dishCooked = false;
         this.nextToTable = false;
         this.wasServed = false;
+
+        // Set progress bars -
+        // One for the time customer waits for his order
+        // The other marks the time he leaves the caffe
         timeToLeave = new ProgressBar();
         progressBar = new ProgressBar();
         this.timeToLeave.setDelay(50);
+
         this.scoreSystem = scoreSystem;
     }
 
@@ -49,6 +62,8 @@ public class Customer extends Player {
     @Override
     void setPlayerImage() {
         try {
+
+            // Generate randon customer image out of three options.
             ArrayList<BufferedImage> photos = new ArrayList<>();
 
             photos.add(ImageIO.read(getClass().getResource("/pictures/customer1.png")));
@@ -65,7 +80,7 @@ public class Customer extends Player {
             g2.drawImage(tmp, 0, 0, null);
             g2.dispose();
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(); // Fall back in case image does not exist
             this.playerImage = null;
         }
     }
@@ -78,8 +93,12 @@ public class Customer extends Player {
         this.nextToTable = nearTable;
     }
 
+    /**
+     * Draw and update the customer's speech bubble according to the game.
+     */
     void drawBubble(Graphics g, Kitchen kitchen, CaffeGame game) {
 
+        // Only draw bubble if customer is seated next to table.
         if (isNextToTable()) {
             BufferedImage img = null;
             JPanel barPanel = this.progressBar.getPanel();
@@ -88,7 +107,6 @@ public class Customer extends Player {
                 img = dish.getPhoto();
 
                 // Add progress bar
-
                 if (this.progressBar != null && game != null) {
                     if (barPanel.getParent() != game) {
                         game.add(barPanel); // only add once
@@ -96,6 +114,8 @@ public class Customer extends Player {
                     barPanel.setBounds(this.getX() + 10, this.getY(), 10, 50);
                 }
 
+
+                // Start dish preparation timer.
                 if (!dishCooked) {
                     dishCooked = true;
                     kitchen.prepareDish(this.dish, game);
@@ -103,17 +123,22 @@ public class Customer extends Player {
 
             }
 
+            // Handle bubble when time to be served is up.
             if (!this.progressBar.isTimeUp() && this.dish == null) {
                 try {
-                    game.remove(barPanel);
+                    game.remove(barPanel); // renove time bar from screen.
                     this.wasServed = true;
-                    if (wasServed && !scoreGiven) {
+
+                    // If customer was served in time - user achieves points.
+                    if (wasServed && !scoreGiven) { 
                         scoreSystem.addScore(20);
                         scoreGiven = true;
                     }
+
+                    // Stopping time bar and displaying custommer's comment.
                     this.progressBar.stopProgressBar();
                     img = ImageIO.read(getClass().getResource("/pictures/grin.png"));
-                    if (!startTimeToLeave) {
+                    if (!startTimeToLeave) { // Starting time to leave timer.
                         startTimeToLeave = true;
                         this.timeToLeave.startProgressBar();
                     }
@@ -121,14 +146,16 @@ public class Customer extends Player {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            } else if (this.progressBar.isTimeUp() && !wasServed) {
+                // In case customer was not served in time
+            } else if (this.progressBar.isTimeUp() && !wasServed) { 
                 try {
                     game.remove(barPanel);
                     game.kitchen.removeDish(this.dish);
 
-                    this.dish = null;
-                    img = ImageIO.read(getClass().getResource("/pictures/rage.png"));
-                    if (!startTimeToLeave) {
+                    this.dish = null; 
+                    // Setting customer's response
+                    img = ImageIO.read(getClass().getResource("/pictures/rage.png")); 
+                    if (!startTimeToLeave) { // Starting time to leave timer.
                         startTimeToLeave = true;
                         this.timeToLeave.startProgressBar();
                     }
@@ -139,10 +166,12 @@ public class Customer extends Player {
 
             }
 
+            // Remove customer from game panel when time to leave panel is done.
             if (startTimeToLeave) {
-                removeCustomer();
+                removeCustomer(); 
             }
 
+            // Speach bubble display
             g.setColor(Color.white);
             g.fillOval(playerX + 65, playerY - 30, 44, 44);
             g.drawOval(playerX + 65, playerY - 30, 44, 44);
@@ -154,6 +183,9 @@ public class Customer extends Player {
 
     }
 
+    /**
+     * 
+     */
     public static void startSpawner(List<Customer> customers, int spawnX, int[] possibleY, JPanel panel,
             ScoreSystem scoreSystem, Menu m) {
         if (customerSpawnTimer != null && customerSpawnTimer.isRunning()) {
@@ -180,6 +212,9 @@ public class Customer extends Player {
         customerSpawnTimer.start();
     }
 
+    /**
+     * Mark a customer for removal when time is up.
+     */
     public void removeCustomer() {
         if (startTimeToLeave && timeToLeave.isTimeUp()) {
             markForRemoval();
@@ -196,6 +231,10 @@ public class Customer extends Player {
         return visible;
     }
 
+    /**
+     * When time to leave is up - set customer visibility to false 
+     * and stop progress bars if they are still running.
+     */
     public void markForRemoval() {
         this.visible = false;
         progressBar.stopProgressBar();
