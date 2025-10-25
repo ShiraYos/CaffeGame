@@ -24,8 +24,8 @@ Click the customer and then the table in order to seat the customer next to the 
 * Get 5 stars - WIN THE GAME!!
 
 **Features to test**
-Waitress and customers movement - * Waitress - click on a table.
-                                  * Customer - click on a customer and then on a table.
-Customer logic - Customer randomly appears, waits for food and reacts.
-Scoring system - Points increase after serving correctly.
-Dynamic kitchen - Food items appear and disappear according to the customers orders.
+*Waitress and customers movement - * Waitress - click on a table.
+                                   * Customer - click on a customer and then on a table.
+*Customer logic - Customer randomly appears, waits for food and reacts.
+*Scoring system - Points increase after serving correctly.
+*Dynamic kitchen - Food items appear and disappear according to the customers orders.
